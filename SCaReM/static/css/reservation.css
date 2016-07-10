@@ -1,0 +1,8 @@
+div.related-widget-wrapper {
+    float: none;
+}
+
+.error {
+    font-weight: bold;
+    background-color: orange;
+}

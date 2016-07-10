@@ -1,0 +1,66 @@
+<h1>Create Reservation</h1>
+
+<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/reservation.css" />
+
+{% if error_message %}<p class="error">{{ error_message }}</p>{% endif %}
+
+<form action="/reservation/create/" method="post">
+  {% csrf_token %}
+
+  <div class="form-row field-event">
+    <div>
+      <label class="required" for="id_event">Event:</label>
+      <input class="vTextField" id="id_event" maxlength="100" name="event" type="text" value="" />
+      <p class="help">What are you doing?  For example "Dance" or "Movie Night".</p>
+    </div>
+  </div>
+    
+  <div class="form-row field-owner">
+    <div>
+      <label class="required" for="id_owner">Owner:</label>
+      <input class="vTextField" id="id_owner" maxlength="50" name="owner" type="text" value="" />
+      <p class="help">Fill in your name here.</p>
+    </div>
+  </div>
+    
+  <div class="form-row field-camp">
+    <div>
+      <label class="required" for="id_camp">Camp:</label>
+      <div class="related-widget-wrapper">
+	<select id="id_camp" name="camp">
+	  <option value="">---------</option>
+	  {% for camp in camps %}
+	    <option value="{{ camp.id }}">{{ camp.name }}</option>
+          {% endfor %}
+	</select>
+      </div>
+    </div>
+  </div>
+    
+  <div class="form-row field-resources">
+    <div>
+      <label class="required" for="id_resources">Resources:</label>
+      <div class="related-widget-wrapper">
+	<select multiple="multiple" id="id_resources" name="resources">
+	  {% for resource in resources %}
+	    <option value="{{ resource.id }}">{{ resource.name }}</option>
+          {% endfor %}
+	</select>
+      </div>
+      <p class="help">Hold down "Control", or "Command" on a Mac, to select more than one.</p>
+    </div>
+  </div>
+    
+  <div class="form-row time">
+    <div>
+      <label class="required" for="id_date">Time:</label>
+      <p class="datetime">Date: <input class="vDateField" id="id_date" name="date" size="10" type="text" value="" /></p>
+      <p class="datetime">Start Time: <input class="vTimeField" id="id_start_time" name="start_time" size="8" type="text" value="" /></p>
+      <p class="datetime">End Time: <input class="vTimeField" id="id_end_time" name="end_time" size="8" type="text" value="" /></p>
+    </div>
+  </div>
+
+  <input type="submit" value="Create Reservation" />
+</form>
