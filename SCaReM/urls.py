@@ -20,5 +20,6 @@ import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.index),
-    url(r'^reservation/create/', views.create_reservation),
+    url(r'^reservation/create/', views.create_or_edit_reservation),
+    url(r'^reservation/edit/(?P<reservation_id>[0-9]+)/$', views.create_or_edit_reservation),
 ]
