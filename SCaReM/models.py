@@ -31,3 +31,25 @@ class Reservation(models.Model):
     def __str__(self):
         return "%s %s on %s" % (
             self.camp.name, self.event, self.start_time.date())
+
+    # TODO regressions
+    def check_for_conflicts(self, resources):
+        # look for conflicts with each resource.  the way we are
+        # querying could produce duplicates, so shove them into a dict
+        # by id to eliminate those.
+        conflicts = {}
+        for resource in resources:
+            resource_conflicts = Reservation.objects.filter(
+                resources__id__exact=resource.id).filter(
+                    start_time__lt = self.end_time).filter(
+                        end_time__gt = self.start_time)
+            for conflict in resource_conflicts:
+                conflicts[conflict.id] = conflict
+
+        # if we are editing an existing reservation, we probably found a
+        # "conflict" with ourself.  obviously that's not a real conflict,
+        # so remove it if it's there
+        if self.id in conflicts:
+            del conflicts[self.id]
+                
+        return conflicts.values()
