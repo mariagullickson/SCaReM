@@ -4,6 +4,13 @@
 <link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
 <link rel="stylesheet" type="text/css" href="/static/css/reservation.css" />
 
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/calendar.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+
 {% for error_message in error_messages %}
   <p class="error">{{ error_message }}</p>
 {% endfor %}
@@ -63,9 +70,13 @@
   <div class="form-row time">
     <div>
       <label class="required" for="id_date">Time:</label>
-      <p class="datetime">Date: <input class="vDateField" id="id_date" name="date" size="10" type="text" value="{{ date_value }}" /></p>
-      <p class="datetime">Start Time: <input class="vTimeField" id="id_start_time" name="start_time" size="8" type="text" value="{{ start_time_value }}" /></p>
-      <p class="datetime">End Time: <input class="vTimeField" id="id_end_time" name="end_time" size="8" type="text" value="{{ end_time_value }}" /></p>
+      <p class="datetime">
+	<label>Date:</label>
+	<input class="vDateField" id="id_date" name="date" size="10" type="text" value="{{ date_value }}" />
+	<label class="datetimeshortcuts" />
+      </p>
+      <p class="datetime"><label>Start Time:</label> <input class="vTimeField" id="id_start_time" name="start_time" size="10" type="text" value="{{ start_time_value }}" /></p>
+      <p class="datetime"><label>End Time:</label> <input class="vTimeField" id="id_end_time" name="end_time" size="10" type="text" value="{{ end_time_value }}" /></p>
     </div>
   </div>
 
