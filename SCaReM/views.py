@@ -1,7 +1,7 @@
 from django.http import HttpResponse,HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 import models
-from datetime import datetime
+from datetime import datetime, timedelta
 
 DATE_FORMAT = "%m/%d/%Y"
 TIME_FORMAT = "%I : %M %p"
@@ -93,6 +93,12 @@ def create_or_edit_reservation(request, reservation_id=None):
             if (reservation.start_time and reservation.end_time
                 and reservation.end_time <= reservation.start_time):
                 errors.append("Reservation must end after it starts")
+
+            # don't allow reservations less than a week in the future
+            # (which includes reservations in the past)
+            if (reservation.start_time
+                and reservation.start_time < datetime.now() + timedelta(weeks=1)):
+                errors.append("Reservations must be at least one week in the future")
 
             # look for conflicts
             if date and start_time and end_time:
