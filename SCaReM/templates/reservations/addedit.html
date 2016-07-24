@@ -1,15 +1,15 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+  </head>
+<body>
 <h1>Create Reservation</h1>
 
 <link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
 <link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
 <link rel="stylesheet" type="text/css" href="/static/css/reservation.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/wickedpicker.min.css" />
 
-<script type="text/javascript" src="/admin/jsi18n/"></script>
-<script type="text/javascript" src="/static/admin/js/core.js"></script>
-<script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>
-<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
-<script type="text/javascript" src="/static/admin/js/calendar.js"></script>
-<script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
 
 {% for error_message in error_messages %}
   <p class="error">{{ error_message }}</p>
@@ -75,10 +75,19 @@
 	<input class="vDateField" id="id_date" name="date" size="10" type="text" value="{{ date_value }}" />
 	<label class="datetimeshortcuts" />
       </p>
-      <p class="datetime"><label>Start Time:</label> <input class="vTimeField" id="id_start_time" name="start_time" size="10" type="text" value="{{ start_time_value }}" /></p>
-      <p class="datetime"><label>End Time:</label> <input class="vTimeField" id="id_end_time" name="end_time" size="10" type="text" value="{{ end_time_value }}" /></p>
+      <p class="datetime"><label>Start Time:</label> <input class="timepicker" id="id_start_time" name="start_time" size="10" type="text" value="{{ start_time_value }}" /></p>
+      <p class="datetime"><label>End Time:</label> <input class="timepicker" id="id_end_time" name="end_time" size="10" type="text" value="{{ end_time_value }}" /></p>
     </div>
   </div>
 
   <input type="submit" value="Save Reservation" />
 </form>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/wickedpicker.js"></script>
+
+<script type="text/javascript">
+      $('.timepicker').wickedpicker();
+</script>
+</body>
+</html>

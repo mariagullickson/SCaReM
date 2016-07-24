@@ -4,7 +4,7 @@ import models
 from datetime import datetime
 
 DATE_FORMAT = "%Y-%m-%d"
-TIME_FORMAT = "%I:%M%p"
+TIME_FORMAT = "%I : %M %p"
 DATETIME_FORMAT = "%s %s" % (DATE_FORMAT, TIME_FORMAT)
 
 def index(request):
@@ -66,7 +66,7 @@ def create_or_edit_reservation(request, reservation_id=None):
                     test = datetime.strptime(start_time, TIME_FORMAT)
                     form_values['start_time_value'] = start_time
                 except:
-                    errors.append("Invalid Start Time.  Should be formatted as HH:MM{am/pm}.")
+                    errors.append("Invalid Start Time.  Should be formatted as HH : MM {am/pm}.")
                     start_time = None
             else:
                 errors.append("You must specify a Start Time")
@@ -77,7 +77,7 @@ def create_or_edit_reservation(request, reservation_id=None):
                     test = datetime.strptime(end_time, TIME_FORMAT)
                     form_values['end_time_value'] = end_time
                 except:
-                    errors.append("Invalid End Time.  Should be formatted as HH:MM{am/pm}.")
+                    errors.append("Invalid End Time.  Should be formatted as HH : MM {am/pm}.")
                     end_time = None
             else:
                 errors.append("You must specify a End Time")
