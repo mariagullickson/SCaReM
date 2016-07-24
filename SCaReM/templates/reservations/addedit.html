@@ -9,7 +9,7 @@
 <link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
 <link rel="stylesheet" type="text/css" href="/static/css/reservation.css" />
 <link rel="stylesheet" type="text/css" href="/static/css/wickedpicker.min.css" />
-
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css" />
 
 {% for error_message in error_messages %}
   <p class="error">{{ error_message }}</p>
@@ -72,7 +72,7 @@
       <label class="required" for="id_date">Time:</label>
       <p class="datetime">
 	<label>Date:</label>
-	<input class="vDateField" id="id_date" name="date" size="10" type="text" value="{{ date_value }}" />
+	<input class="datepicker" id="id_date" name="date" size="10" type="text" value="{{ date_value }}" />
 	<label class="datetimeshortcuts" />
       </p>
       <p class="datetime"><label>Start Time:</label> <input class="timepicker" id="id_start_time" name="start_time" size="10" type="text" value="{{ start_time_value }}" /></p>
@@ -84,10 +84,12 @@
 </form>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/static/js/wickedpicker.js"></script>
 
 <script type="text/javascript">
-      $('.timepicker').wickedpicker();
+  $('.datepicker').datepicker();
+  $('.timepicker').wickedpicker();
 </script>
 </body>
 </html>

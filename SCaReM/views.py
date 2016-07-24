@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404
 import models
 from datetime import datetime
 
-DATE_FORMAT = "%Y-%m-%d"
+DATE_FORMAT = "%m/%d/%Y"
 TIME_FORMAT = "%I : %M %p"
 DATETIME_FORMAT = "%s %s" % (DATE_FORMAT, TIME_FORMAT)
 
@@ -55,7 +55,7 @@ def create_or_edit_reservation(request, reservation_id=None):
                     test = datetime.strptime(date, DATE_FORMAT)
                     form_values['date_value'] = date
                 except:
-                    errors.append("Invalid Date.  Should be formatted as YYYY-MM-DD")
+                    errors.append("Invalid Date.  Should be formatted as MM/DD/YYYY")
                     date = None
             else:
                 errors.append("You must specify a Date")
