@@ -32,7 +32,6 @@ class Reservation(models.Model):
         return "%s %s on %s" % (
             self.camp.name, self.event, self.start_time.date())
 
-    # TODO regressions
     def check_for_conflicts(self, resources):
         # look for conflicts with each resource.  the way we are
         # querying could produce duplicates, so shove them into a dict
