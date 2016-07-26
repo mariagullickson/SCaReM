@@ -48,8 +48,9 @@ def create_or_edit_reservation(request, reservation_id=None):
             camp_id = request.POST['camp']
             if not camp_id:
                 errors.append("You must specify a Camp")
-            reservation.camp = get_object_or_404(models.Camp, pk=camp_id)
-            form_values['camp_value'] = reservation.camp.id
+            else:
+                reservation.camp = get_object_or_404(models.Camp, pk=camp_id)
+                form_values['camp_value'] = reservation.camp.id
 
             resource_ids = [int(x) for x in request.POST.getlist('resources')]
             resources = [
