@@ -2,6 +2,7 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 import models
 from datetime import datetime, timedelta
+import json
 
 DATE_FORMAT = "%m/%d/%Y"
 TIME_FORMAT = "%I : %M %p"
@@ -11,9 +12,19 @@ def index(request):
     return HttpResponse('Hello World!')
 
 def create_or_edit_reservation(request, reservation_id=None):
+    resources = models.Resource.objects.all()
+    tag_resources = {}
+    for resource in resources:
+        for tag in resource.tags.all():
+            if tag.id not in tag_resources:
+                tag_resources[tag.id] = []
+            tag_resources[tag.id].append(resource.id)
+    
     form_values = {
         'camps': models.Camp.objects.all(),
-        'resources': models.Resource.objects.all()
+        'resources': models.Resource.objects.all(),
+        'tags': models.Tag.objects.all(),
+        'tag_resources': json.dumps(tag_resources),
     }
     errors = []
 
