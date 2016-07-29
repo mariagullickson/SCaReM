@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <title>SCaReM - The Summer Camp Resource Manager</title>
+    <meta charset="UTF-8">
+
+  </head>
+  
+<body>
+<h1>SCaReM - The Summer Camp Resource Manager</h1>
+
+<ul>
+  <li><a href="reservation/create">Create a reservation</a></li>
+  <li>View reservations by camp:
+    <form action="schedule/bycamp">
+  	<select id="id_camp" name="camp_id">
+	  <option value="">---------</option>
+	  {% for camp in camps %}
+	  <option value="{{ camp.id }}"
+		  {% if camp.id == camp_value %}selected="selected"{% endif %}
+		  >{{ camp.name }}</option>
+          {% endfor %}
+	</select>
+	<input type="submit" value="View reservations" />
+</form>
+  </li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+<div class='view_reservation'>
+  
+  <div class='times'>{{ reservation.start_time }} to {{ reservation.end_time }}</div>
+
+  {% if show_camp %}
+    <div class='camp'>{{ reservation.camp.name }}</div>
+  {% endif %}
+
+  <div class='event'>{{ reservation.event }}</div>
+
+  <div class='resources'>Using {{ reservation.resource_names }}</div>
+    
+  <div class='owner'>Reserved by {{ reservation.owner}}</div>
+</div>

@@ -1,4 +1,4 @@
-from django.http import HttpResponse,HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404
 import models
 from datetime import datetime, timedelta
@@ -9,7 +9,25 @@ TIME_FORMAT = "%I : %M %p"
 DATETIME_FORMAT = "%s %s" % (DATE_FORMAT, TIME_FORMAT)
 
 def index(request):
-    return HttpResponse('Hello World!')
+    data = {
+        'camps': models.Camp.objects.all(),
+        }
+    return render(request, 'index.html', data)
+
+def view_by_camp(request):
+    if 'camp_id' not in request.GET:
+        raise Http404("You must select a camp")
+    camp_id = int(request.GET['camp_id'])
+    reservations = models.Reservation.objects.filter(camp__id__exact=camp_id) \
+                                             .filter(start_time__gt=datetime.now()) \
+                                             .order_by('start_time') \
+                                             .order_by('end_time')
+    camp = get_object_or_404(models.Camp, pk=camp_id)
+    data = {
+        'reservations': reservations,
+        'camp_name': camp.name,
+        }
+    return render(request, 'schedule/bycamp.html', data)
 
 def create_or_edit_reservation(request, reservation_id=None):
     resources = models.Resource.objects.all()

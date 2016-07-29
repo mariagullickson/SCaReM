@@ -32,6 +32,9 @@ class Reservation(models.Model):
         return "%s %s on %s" % (
             self.camp.name, self.event, self.start_time.date())
 
+    def resource_names(self):
+        return ", ".join([r.name for r in self.resources.all()])
+
     def check_for_conflicts(self, resources):
         # look for conflicts with each resource.  the way we are
         # querying could produce duplicates, so shove them into a dict

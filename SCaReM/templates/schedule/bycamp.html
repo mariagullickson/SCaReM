@@ -1,0 +1,20 @@
+<html>
+  <head>
+    <title>SCaReM - The Summer Camp Resource Manager</title>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" type="text/css" href="/static/css/reservation_view.css" />
+  </head>
+  
+<body>
+<h1>Reservations for {{ camp_name }}</h1>
+{% for reservation in reservations %}
+  {% include "schedule/view_reservation.html" with show_camp=False %}
+{% endfor %}
+<ul>
+</ul>
+
+<a href="/">Home</a>
+
+</body>
+</html>
