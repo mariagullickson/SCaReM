@@ -1,6 +1,6 @@
 <div class='view_reservation'>
   
-  <div class='times'>{{ reservation.start_time }} to {{ reservation.end_time }}</div>
+  <div class='times'>{{ reservation.start_time.time }} to {{ reservation.end_time.time }}</div>
 
   {% if show_camp %}
     <div class='camp'>{{ reservation.camp.name }}</div>

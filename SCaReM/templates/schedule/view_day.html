@@ -1,0 +1,6 @@
+<div class='view_reservation_day'>
+  <div class='day'>{{ day |date:"l F jS, Y"}}</div>
+  {% for reservation in reservations %}
+    {% include "schedule/view_reservation.html" %}
+  {% endfor %}
+</div>
