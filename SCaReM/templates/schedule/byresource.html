@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <title>SCaReM - The Summer Camp Resource Manager</title>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" type="text/css" href="/static/css/reservation_view.css" />
+  </head>
+  
+<body>
+  <h1>Reservations for {{ resource_name }}</h1>
+  {% if not reservations %}
+  <p>{{ resource_name }} has no upcoming reservations.</p>
+  {% endif %}
+  
+  {% for reservation_day in reservations %}
+    {% include "schedule/view_day.html" with show_camp=True day=reservation_day.0 reservations=reservation_day.1 %}
+  {% endfor %}
+
+  <a href="/">Home</a>
+
+</body>
+</html>

@@ -10,6 +10,7 @@
 
 <ul>
   <li><a href="reservation/create">Create a reservation</a></li>
+
   <li>View reservations by camp:
     <form action="schedule/bycamp">
   	<select id="id_camp" name="camp_id">
@@ -21,7 +22,21 @@
           {% endfor %}
 	</select>
 	<input type="submit" value="View reservations" />
-</form>
+    </form>
+  </li>
+
+  <li>View reservations by resource:
+    <form action="schedule/byresource">
+  	<select id="id_resource" name="resource_id">
+	  <option value="">---------</option>
+	  {% for resource in resources %}
+	  <option value="{{ resource.id }}"
+		  {% if resource.id == resource_value %}selected="selected"{% endif %}
+		  >{{ resource.name }}</option>
+          {% endfor %}
+	</select>
+	<input type="submit" value="View reservations" />
+    </form>
   </li>
 </ul>
 

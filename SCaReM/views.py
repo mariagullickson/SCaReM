@@ -11,6 +11,7 @@ DATETIME_FORMAT = "%s %s" % (DATE_FORMAT, TIME_FORMAT)
 def index(request):
     data = {
         'camps': models.Camp.objects.all(),
+        'resources': models.Resource.objects.all(),
         }
     return render(request, 'index.html', data)
 
