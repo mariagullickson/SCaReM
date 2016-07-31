@@ -3,10 +3,7 @@ from django.shortcuts import render, get_object_or_404
 import models
 from datetime import datetime, timedelta
 import json
-
-DATE_FORMAT = "%m/%d/%Y"
-TIME_FORMAT = "%I : %M %p"
-DATETIME_FORMAT = "%s %s" % (DATE_FORMAT, TIME_FORMAT)
+import settings
 
 def index(request):
     data = {
@@ -68,7 +65,7 @@ def create_or_edit_reservation(request, reservation_id=None):
             date = request.POST['date']
             if date:
                 try:
-                    test = datetime.strptime(date, DATE_FORMAT)
+                    test = datetime.strptime(date, settings.DATE_FORMAT)
                     form_values['date_value'] = date
                 except:
                     errors.append("Invalid Date.  Should be formatted as MM/DD/YYYY")
@@ -79,7 +76,7 @@ def create_or_edit_reservation(request, reservation_id=None):
             start_time = request.POST['start_time']
             if start_time:
                 try:
-                    test = datetime.strptime(start_time, TIME_FORMAT)
+                    test = datetime.strptime(start_time, settings.TIME_FORMAT)
                     form_values['start_time_value'] = start_time
                 except:
                     errors.append("Invalid Start Time.  Should be formatted as HH : MM {am/pm}.")
@@ -90,7 +87,7 @@ def create_or_edit_reservation(request, reservation_id=None):
             end_time = request.POST['end_time']
             if end_time:
                 try:
-                    test = datetime.strptime(end_time, TIME_FORMAT)
+                    test = datetime.strptime(end_time, settings.TIME_FORMAT)
                     form_values['end_time_value'] = end_time
                 except:
                     errors.append("Invalid End Time.  Should be formatted as HH : MM {am/pm}.")
@@ -101,11 +98,11 @@ def create_or_edit_reservation(request, reservation_id=None):
             if date and start_time:
                 reservation.start_time = datetime.strptime(
                     "%s %s" % (date, start_time),
-                    DATETIME_FORMAT)
+                    settings.DATETIME_FORMAT)
             if date and end_time:
                 reservation.end_time = datetime.strptime(
                     "%s %s" % (date, end_time),
-                    DATETIME_FORMAT)
+                    settings.DATETIME_FORMAT)
             if (reservation.start_time and reservation.end_time
                 and reservation.end_time <= reservation.start_time):
                 errors.append("Reservation must end after it starts")
@@ -128,7 +125,7 @@ def create_or_edit_reservation(request, reservation_id=None):
                                       if resource.id in resource_ids]
                     message += " They are using %s from %s to %s." % (
                         ", ".join([resource.name for resource in used_resources]),
-                        conflict.start_time.strftime(TIME_FORMAT),
+                        conflict.start_time.strftime(settings.TIME_FORMAT),
                         conflict.end_time.strftime("%I:%M%P"))
                 
                     errors.append(message)
@@ -151,10 +148,10 @@ def create_or_edit_reservation(request, reservation_id=None):
         form_values['camp_value'] = reservation.camp.id
         form_values['resource_values'] = [
             resource.id for resource in reservation.resources.all()]
-        form_values['date_value'] = reservation.start_time.strftime(DATE_FORMAT)
+        form_values['date_value'] = reservation.start_time.strftime(settings.DATE_FORMAT)
         form_values['start_time_value'] = reservation.start_time.strftime(
-            TIME_FORMAT)
-        form_values['end_time_value'] = reservation.end_time.strftime(TIME_FORMAT)
+            settings.TIME_FORMAT)
+        form_values['end_time_value'] = reservation.end_time.strftime(settings.TIME_FORMAT)
         form_values['reservation_id'] = reservation_id
 
     form_values['error_messages'] = errors

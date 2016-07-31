@@ -26,4 +26,5 @@ urlpatterns = [
 
     url(r'^schedule/bycamp/', views_schedule.view_by_camp),
     url(r'^schedule/byresource/', views_schedule.view_by_resource),
+    url(r'^schedule/bydate/', views_schedule.view_by_date),
 ]

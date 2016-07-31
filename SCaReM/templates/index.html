@@ -3,6 +3,7 @@
     <title>SCaReM - The Summer Camp Resource Manager</title>
     <meta charset="UTF-8">
 
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css" />
   </head>
   
 <body>
@@ -38,7 +39,19 @@
 	<input type="submit" value="View reservations" />
     </form>
   </li>
+
+  <li>View reservations by date:
+    <form action="schedule/bydate">
+      <input class="datepicker" id="id_start_date" name="start_date" size="10" type="text" /><label class="datetimeshortcuts" />
+      to
+      <input class="datepicker" id="id_end_date" name="end_date" size="10" type="text" /><label class="datetimeshortcuts" />
+      <input type="submit" value="View reservations" />
+    </form>
+  </li>
 </ul>
 
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/static/js/index.js"></script>
 </body>
 </html>
