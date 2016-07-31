@@ -1,0 +1,12 @@
+.card {
+    width: 38%;
+    float: left;
+    border-style: solid;
+    border-radius: 8px;
+    border-color: darkgreen;
+    height: 140px;
+    padding: 2%;
+    margin: 3%;
+    font-size: large;
+    text-align: center;
+}
