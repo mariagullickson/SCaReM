@@ -2,11 +2,6 @@ div.related-widget-wrapper {
     float: none;
 }
 
-.error {
-    font-weight: bold;
-    background-color: orange;
-}
-
 div.time label {
     display: inline-block;
     width: 75px;

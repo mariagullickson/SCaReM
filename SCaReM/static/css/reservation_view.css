@@ -2,8 +2,8 @@
     border-style: solid;
     border-radius: 8px;
     border-color: darkgreen;
-    margin: 10px;
-    padding: 5px;
+    padding: 1%;
+    margin: 1%;
 }
 
 .view_reservation_day {
@@ -13,6 +13,27 @@
 }
 
 .view_reservation_day .day {
-    font-size: 20px;
-    margin: 10px;
+    font-size: 150%;
+    padding: 1%;
+}
+
+.view_reservation .owner {
+    color: grey;
+    font-size: 75%;
+}
+
+.view_reservation .metadata {
+    width: 40%;
+    float: left;
+    display: block;
+}
+
+.view_reservation .resources {
+    width: 40%;
+    float: right;
+    display: block;
+}
+
+.view_reservation .clear {
+    clear: both;
 }

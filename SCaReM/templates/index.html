@@ -3,17 +3,22 @@
     <title>SCaReM - The Summer Camp Resource Manager</title>
     <meta charset="UTF-8">
 
+    <link rel="stylesheet" type="text/css" href="/static/css/general.css" />
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css" />
   </head>
   
 <body>
 <h1>SCaReM - The Summer Camp Resource Manager</h1>
 
+{% for error_message in error_messages %}
+  <p class="error">{{ error_message }}</p>
+{% endfor %}
+
 <ul>
   <li><a href="reservation/create">Create a reservation</a></li>
 
   <li>View reservations by camp:
-    <form action="schedule/bycamp">
+    <form action="/schedule/bycamp">
   	<select id="id_camp" name="camp_id">
 	  <option value="">---------</option>
 	  {% for camp in camps %}
@@ -27,7 +32,7 @@
   </li>
 
   <li>View reservations by resource:
-    <form action="schedule/byresource">
+    <form action="/schedule/byresource">
   	<select id="id_resource" name="resource_id">
 	  <option value="">---------</option>
 	  {% for resource in resources %}
@@ -41,7 +46,7 @@
   </li>
 
   <li>View reservations by date:
-    <form action="schedule/bydate">
+    <form action="/schedule/bydate">
       <input class="datepicker" id="id_start_date" name="start_date" size="10" type="text" /><label class="datetimeshortcuts" />
       to
       <input class="datepicker" id="id_end_date" name="end_date" size="10" type="text" /><label class="datetimeshortcuts" />

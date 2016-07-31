@@ -5,10 +5,11 @@ from datetime import datetime, timedelta
 import json
 import settings
 
-def index(request):
+def index(request, errors=None):
     data = {
         'camps': models.Camp.objects.all(),
         'resources': models.Resource.objects.all(),
+        'error_messages': errors
         }
     return render(request, 'index.html', data)
 

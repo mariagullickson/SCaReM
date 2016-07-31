@@ -1,14 +1,22 @@
 <div class='view_reservation'>
-  
-  <div class='times'>{{ reservation.start_time.time }} to {{ reservation.end_time.time }}</div>
+  <div class='metadata'>
+    <div class='times'>{{ reservation.start_time.time }} to {{ reservation.end_time.time }}</div>
 
-  {% if show_camp %}
-    <div class='camp'>{{ reservation.camp.name }}</div>
-  {% endif %}
+    <div class='event'>
+      {% if show_camp %}
+        {{ reservation.camp.name }} - 
+      {% endif %}
+      {{ reservation.event }}
+    </div>
 
-  <div class='event'>{{ reservation.event }}</div>
-
-  <div class='resources'>Using {{ reservation.resource_names }}</div>
+    <div class='owner'>Reserved by {{ reservation.owner}}</div>
+  </div>
     
-  <div class='owner'>Reserved by {{ reservation.owner}}</div>
+  <div class='resources'>
+      {% for resource in reservation.resources.all %}
+      {{ resource.name }}<br/>
+      {% endfor %}
+  </div>
+
+  <div class='clear'></div>
 </div>
