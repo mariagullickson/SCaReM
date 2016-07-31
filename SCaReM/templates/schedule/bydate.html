@@ -1,12 +1,6 @@
-<html>
-  <head>
-    <title>SCaReM - The Summer Camp Resource Manager</title>
-    <meta charset="UTF-8">
+{% extends 'schedule/base.html' %}
 
-    <link rel="stylesheet" type="text/css" href="/static/css/reservation_view.css" />
-  </head>
-  
-<body>
+{% block content %}
   <h1>Reservations for {{ start_date|date:"l F jS, Y" }} {% if end_date %} to {{ end_date|date:"l F jS, Y" }}{% endif %}</h1>
   {% if not reservations %}
   <p>There are no reservations during this time.</p>
@@ -15,9 +9,4 @@
   {% for reservation_day in reservations %}
     {% include "schedule/view_day.html" with show_camp=True day=reservation_day.0 reservations=reservation_day.1 %}
   {% endfor %}
-
-  <a href="/">Home</a>
-  <p class='no-changes'>*Changes cannot be made to reservations that are less than one week in the future</p>
-
-</body>
-</html>
+{% endblock %}
