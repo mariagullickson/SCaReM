@@ -110,8 +110,7 @@ def create_or_edit_reservation(request, reservation_id=None):
 
             # don't allow reservations less than a week in the future
             # (which includes reservations in the past)
-            if (reservation.start_time
-                and reservation.start_time < datetime.now() + timedelta(weeks=1)):
+            if reservation.start_time and reservation.is_frozen():
                 errors.append("Reservations must be at least one week in the future")
 
             # look for conflicts

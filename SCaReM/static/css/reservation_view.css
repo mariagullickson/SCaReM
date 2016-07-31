@@ -1,9 +1,18 @@
+.no-changes {
+    font-style: italic;
+    color: grey;
+}
+
 .view_reservation {
     border-style: solid;
     border-radius: 8px;
     border-color: darkgreen;
     padding: 1%;
     margin: 1%;
+}
+
+.view_reservation_day form {
+    margin-bottom: 2px;
 }
 
 .view_reservation_day {
@@ -22,16 +31,19 @@
     font-size: 75%;
 }
 
+.view_reservation .actions {
+    width: 15%;
+    float: left;
+}
+
 .view_reservation .metadata {
     width: 40%;
     float: left;
-    display: block;
 }
 
 .view_reservation .resources {
     width: 40%;
-    float: right;
-    display: block;
+    float: left;
 }
 
 .view_reservation .clear {

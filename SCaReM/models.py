@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime, timedelta
 
 class Tag(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -34,6 +35,9 @@ class Reservation(models.Model):
 
     def resource_names(self):
         return ", ".join([r.name for r in self.resources.all()])
+
+    def is_frozen(self):
+        return self.start_time < datetime.now() + timedelta(weeks=1)
 
     def check_for_conflicts(self, resources):
         # look for conflicts with each resource.  the way we are
