@@ -1,7 +1,7 @@
 {% extends 'schedule/base.html' %}
 
-{% block content %}
-  <h1>Reservations for {{ resource_name }}</h1>
+{% block data %}
+  <h2>Reservations for {{ resource_name }}</h2>
   {% if not reservations %}
   <p>{{ resource_name }} has no upcoming reservations.</p>
   {% endif %}

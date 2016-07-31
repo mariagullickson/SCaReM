@@ -1,111 +1,101 @@
-<html>
-  <head>
-    <title>SCaReM - The Summer Camp Resource Manager</title>
-    <meta charset="UTF-8">
+{% extends 'base.html' %}
 
-    <link rel="stylesheet" type="text/css" href="/static/css/general.css" />
-    <link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
-    <link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
-    <link rel="stylesheet" type="text/css" href="/static/css/reservation_form.css" />
-    <link rel="stylesheet" type="text/css" href="/static/css/wickedpicker.min.css" />
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css" />
+{% block header %}
+  <link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+  <link rel="stylesheet" type="text/css" href="/static/css/reservation_form.css" />
+  <link rel="stylesheet" type="text/css" href="/static/css/wickedpicker.min.css" />
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css" />
 
-    <script type="text/javascript">
-      var tagResources = {{ tag_resources|safe }};
-    </script>
-    
-  </head>
-  
-<body>
-<h1>Create Reservation</h1>
+  <script type="text/javascript">
+    var tagResources = {{ tag_resources|safe }};
+  </script>
+{% endblock %}
 
-{% for error_message in error_messages %}
-  <p class="error">{{ error_message }}</p>
-{% endfor %}
+{% block content %}
+<h2>Create Reservation</h2>
 
-<form action="{{ action }}" method="post">
-  {% csrf_token %}
-  <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
+  <form action="{{ action }}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="reservation_id" value="{{ reservation_id }}">
 
-  <div class="form-row field-event">
-    <div>
-      <label class="required" for="id_event">Event:</label>
-      <input class="vTextField" id="id_event" maxlength="100" name="event" type="text" value="{{ event_value }}" />
-      <p class="help">What are you doing?  For example "Dance" or "Movie Night".</p>
-    </div>
-  </div>
-    
-  <div class="form-row field-owner">
-    <div>
-      <label class="required" for="id_owner">Owner:</label>
-      <input class="vTextField" id="id_owner" maxlength="50" name="owner" type="text" value="{{ owner_value }}" />
-      <p class="help">Fill in your name here.</p>
-    </div>
-  </div>
-    
-  <div class="form-row field-camp">
-    <div>
-      <label class="required" for="id_camp">Camp:</label>
-      <div class="related-widget-wrapper">
-	<select id="id_camp" name="camp">
-	  <option value="">---------</option>
-	  {% for camp in camps %}
-	  <option value="{{ camp.id }}"
-		  {% if camp.id == camp_value %}selected="selected"{% endif %}
-		  >{{ camp.name }}</option>
-          {% endfor %}
-	</select>
+    <div class="form-row field-event">
+      <div>
+        <label class="required" for="id_event">Event:</label>
+        <input class="vTextField" id="id_event" maxlength="100" name="event" type="text" value="{{ event_value }}" />
+        <p class="help">What are you doing?  For example "Dance" or "Movie Night".</p>
       </div>
     </div>
-  </div>
     
-  <div class="form-row field-resources">
-    <div>
-      <label class="required" for="id_resources">Resources:</label>
-      <div class="related-widget-wrapper">
-	<p class="help">Select a tag to narrow your resource options.</p>
-	<select id="id_tag" name="tag" class="filter-select">
-	  <option value="">---------</option>
-	  {% for tag in tags %}
-	  <option value="{{ tag.id }}"
-		  {% if tag.id == tag_value %}selected="selected"{% endif %}
-		  >{{ tag.name }}</option>
-          {% endfor %}
-	</select>
-
-	<br/>
-	<select multiple="multiple" id="id_resources" name="resources" class="filtered-select">
-	  {% for resource in resources %}
-	  <option value="{{ resource.id }}"
-		  {% if resource.id in resource_values %}selected="selected"{% endif %}
-		  >{{ resource.name }}</option>
-          {% endfor %}
-	</select>
+    <div class="form-row field-owner">
+      <div>
+        <label class="required" for="id_owner">Owner:</label>
+        <input class="vTextField" id="id_owner" maxlength="50" name="owner" type="text" value="{{ owner_value }}" />
+        <p class="help">Fill in your name here.</p>
       </div>
-      <p class="help">Hold down "Control", or "Command" on a Mac, to select more than one.</p>
     </div>
-  </div>
     
-  <div class="form-row time">
-    <div>
-      <label class="required" for="id_date">Time:</label>
-      <p class="datetime">
-	<label>Date:</label>
-	<input class="datepicker" id="id_date" name="date" size="10" type="text" value="{{ date_value }}" />
-	<label class="datetimeshortcuts" />
-      </p>
-      <p class="datetime"><label>Start Time:</label> <input class="timepicker" id="id_start_time" name="start_time" size="10" type="text" value="{{ start_time_value }}" /></p>
-      <p class="datetime"><label>End Time:</label> <input class="timepicker" id="id_end_time" name="end_time" size="10" type="text" value="{{ end_time_value }}" /></p>
+    <div class="form-row field-camp">
+      <div>
+        <label class="required" for="id_camp">Camp:</label>
+        <div class="related-widget-wrapper">
+          <select id="id_camp" name="camp">
+            <option value="">---------</option>
+            {% for camp in camps %}
+              <option value="{{ camp.id }}"
+                      {% if camp.id == camp_value %}selected="selected"{% endif %}
+                      >{{ camp.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
     </div>
-  </div>
+    
+    <div class="form-row field-resources">
+      <div>
+        <label class="required" for="id_resources">Resources:</label>
+        <div class="related-widget-wrapper">
+          <p class="help">Select a tag to narrow your resource options.</p>
+          <select id="id_tag" name="tag" class="filter-select">
+            <option value="">---------</option>
+            {% for tag in tags %}
+              <option value="{{ tag.id }}"
+                      {% if tag.id == tag_value %}selected="selected"{% endif %}
+                      >{{ tag.name }}</option>
+            {% endfor %}
+          </select>
 
-  <input type="submit" value="Save Reservation" />
-</form>
+          <br/>
+          <select multiple="multiple" id="id_resources" name="resources" class="filtered-select">
+            {% for resource in resources %}
+              <option value="{{ resource.id }}"
+                      {% if resource.id in resource_values %}selected="selected"{% endif %}
+                      >{{ resource.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <p class="help">Hold down "Control", or "Command" on a Mac, to select more than one.</p>
+      </div>
+    </div>
+    
+    <div class="form-row time">
+      <div>
+        <label class="required" for="id_date">Time:</label>
+        <p class="datetime">
+          <label>Date:</label>
+          <input class="datepicker" id="id_date" name="date" size="10" type="text" value="{{ date_value }}" />
+          <label class="datetimeshortcuts" />
+        </p>
+        <p class="datetime"><label>Start Time:</label> <input class="timepicker" id="id_start_time" name="start_time" size="10" type="text" value="{{ start_time_value }}" /></p>
+        <p class="datetime"><label>End Time:</label> <input class="timepicker" id="id_end_time" name="end_time" size="10" type="text" value="{{ end_time_value }}" /></p>
+      </div>
+    </div>
 
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/static/js/wickedpicker.js"></script>
-<script type="text/javascript" src="/static/js/reservation.js"></script>
-</script>
-</body>
-</html>
+    <input type="submit" value="Save Reservation" />
+  </form>
+
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="/static/js/wickedpicker.js"></script>
+  <script type="text/javascript" src="/static/js/reservation.js"></script>
+
+{% endblock %}

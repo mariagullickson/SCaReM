@@ -1,17 +1,13 @@
-<html>
-  <head>
-    <title>SCaReM - The Summer Camp Resource Manager</title>
-    <meta charset="UTF-8">
+{% extends 'base.html' %}
 
-    <link rel="stylesheet" type="text/css" href="/static/css/reservation_view.css" />
-  </head>
+{% block header %}
+  <link rel="stylesheet" type="text/css" href="/static/css/reservation_view.css" />
+{% endblock %}
   
-<body>
-  {% block content %}
+{% block content %}
+  {% block data %}
   {% endblock %}
   
   <a href="/">Home</a>
   <p class='no-changes'>*Changes cannot be made to reservations that are less than one week in the future</p>
-
-</body>
-</html>
+{% endblock %}

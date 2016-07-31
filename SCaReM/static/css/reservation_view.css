@@ -18,7 +18,11 @@
 .view_reservation_day {
     border-style: solid;
     border-color: darkgreen;
-    margin-bottom: 30px;
+    margin: 0 10px 30px 10px;
+}
+
+.view_reservation input {
+    padding: 4px;
 }
 
 .view_reservation_day .day {

@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <title>SCaReM - The Summer Camp Resource Manager</title>
+    <meta charset="UTF-8">
+
+    <!--
+                                /\
+                        +      /  \
+                       / \    /    \
+                      /   \  /      \
+                     /     \/        \
+                    /       \         \
+                    ~~~~~~~~~~~~~~~~~~~
+      -->
+    
+    <link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/general.css" />
+    {% block header %}
+    {% endblock %}
+  </head>
+  
+  <body>
+    <h1>SCaReM - The Summer Camp Resource Manager</h1>
+
+    {% for error_message in error_messages %}
+      <p class="error">{{ error_message }}</p>
+    {% endfor %}
+
+    {% block content %}
+    {% endblock %}
+
+  </body>
+</html>

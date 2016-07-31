@@ -1,7 +1,7 @@
 {% extends 'schedule/base.html' %}
 
-{% block content %}
-  <h1>Reservations for {{ start_date|date:"l F jS, Y" }} {% if end_date %} to {{ end_date|date:"l F jS, Y" }}{% endif %}</h1>
+{% block data %}
+  <h2>Reservations for {{ start_date|date:"l F jS, Y" }} {% if end_date %} to {{ end_date|date:"l F jS, Y" }}{% endif %}</h2>
   {% if not reservations %}
   <p>There are no reservations during this time.</p>
   {% endif %}

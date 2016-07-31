@@ -1,14 +1,11 @@
-<html>
-  <head>
-    <title>SCaReM - The Summer Camp Resource Manager</title>
-    <meta charset="UTF-8">
-  </head>
+{% extends 'base.html'%}
 
-  <link rel="stylesheet" type="text/css" href="/static/css/general.css" />
+{% block header %}
   <link rel="stylesheet" type="text/css" href="/static/css/reservation_view.css" />
-
-<body>
-<h1>Delete Reservation</h1>
+{% endblock %}
+  
+{% block content %}
+<h2>Delete Reservation</h2>
 
 {% include "view_reservation.html" with hide_actions=True %}
 
@@ -18,3 +15,5 @@
   <input type="hidden" name="confirmed" value="true"/>
   <input type="submit" value="Delete" /> <a href="/">Cancel</a>
 </form>
+
+{% endblock %}
