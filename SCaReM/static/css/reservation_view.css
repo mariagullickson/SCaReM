@@ -53,3 +53,9 @@
 .view_reservation .clear {
     clear: both;
 }
+
+@media print {
+    .actions, .home-link, .no-changes {
+        display: none;
+    }
+}
