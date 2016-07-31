@@ -1,16 +1,18 @@
 <div class='view_reservation'>
-  <div class='actions'>
-    {% if reservation.is_frozen %}
-      <div class='no-changes'>No changes allowed*.</div>
-    {% else %}
-      <form action="/reservation/edit/{{ reservation.id }}">
-        <input type="submit" value="Edit">
-      </form>
-      <form action="/reservation/delete/{{ reservation.id }}">
-        <input type="submit" value="Delete">
-      </form>
-    {% endif %}
-  </div>
+  {% if not hide_actions %}
+    <div class='actions'>
+      {% if reservation.is_frozen %}
+        <div class='no-changes'>No changes allowed*.</div>
+      {% else %}
+        <form action="/reservation/edit/{{ reservation.id }}">
+          <input type="submit" value="Edit">
+        </form>
+        <form action="/reservation/delete/{{ reservation.id }}">
+          <input type="submit" value="Delete">
+        </form>
+      {% endif %}
+    </div>
+  {% endif %}
   
   <div class='metadata'>
     <div class='times'>{{ reservation.start_time.time }} to {{ reservation.end_time.time }}</div>
