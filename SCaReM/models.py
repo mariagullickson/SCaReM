@@ -59,3 +59,20 @@ class Reservation(models.Model):
             del conflicts[self.id]
                 
         return conflicts.values()
+
+class AuditLog(models.Model):
+
+    ADD = 'add'
+    DELETE = 'delete'
+    MODIFY = 'modify'
+    ACTION_CHOICES = (
+        (ADD, 'Add'),
+        (DELETE, 'Delete'),
+        (MODIFY, 'Modify'),
+        )
+    
+    item_class = models.CharField(max_length=25)
+    item_id = models.IntegerField()
+    item_string = models.CharField(max_length=500)
+    timestamp = models.DateTimeField()
+    action = models.CharField(max_length=10, choices=ACTION_CHOICES)
