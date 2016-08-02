@@ -33,6 +33,35 @@ class Reservation(models.Model):
         return "%s %s on %s" % (
             self.camp.name, self.event, self.start_time.date())
 
+    def delete(self):
+        # store an audit log entry
+        audit = AuditLog()
+        audit.reservation_id = self.id
+        audit.reservation_representation = str(self)
+        audit.action = AuditLog.DELETE
+        audit.timestamp = datetime.now()
+        audit.save()
+
+        result = super(Reservation, self).delete()
+        return result
+
+    def save(self, audit=True):
+        is_add = not self.id
+
+        # save the reservation
+        result = super(Reservation, self).save()
+
+        # store an audit log entry
+        if audit:
+            audit = AuditLog()
+            audit.reservation_id = self.id
+            audit.reservation_representation = str(self)
+            audit.action = AuditLog.ADD if is_add else AuditLog.MODIFY
+            audit.timestamp = datetime.now()
+            audit.save()
+            
+        return result
+        
     def resource_names(self):
         return ", ".join([r.name for r in self.resources.all()])
 
@@ -59,3 +88,20 @@ class Reservation(models.Model):
             del conflicts[self.id]
                 
         return conflicts.values()
+
+class AuditLog(models.Model):
+    ADD = 'add'
+    DELETE = 'delete'
+    MODIFY = 'modify'
+    ACTION_CHOICES = (
+        (ADD, 'Add'),
+        (DELETE, 'Delete'),
+        (MODIFY, 'Modify'),
+        )
+
+    # This is intentionally not a foreign key, because we want auditlog
+    # entries to persist after a reservation is deleted
+    reservation_id = models.IntegerField()
+    reservation_representation = models.CharField(max_length=500)
+    timestamp = models.DateTimeField()
+    action = models.CharField(max_length=10, choices=ACTION_CHOICES)

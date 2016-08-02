@@ -144,7 +144,7 @@ def create_or_edit_reservation(request, reservation_id=None):
             if not errors:
                 reservation.save()
                 reservation.resources = resources
-                reservation.save()
+                reservation.save(False)
 
                 return HttpResponseRedirect('/')
         except Exception as e:
