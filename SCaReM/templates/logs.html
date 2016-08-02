@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<table>
+  <tr><th>Time</th><th>Action</th><th>ID</th><th>Description</th></tr>
+  {% for log in logs %}
+  <tr>
+    <td>{{ log.timestamp }}</td>
+    <td>{{ log.action }}</td>
+    <td>{{ log.reservation_id }}</td>
+    <td>{{ log.reservation_representation }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

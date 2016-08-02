@@ -20,6 +20,10 @@ import views, views_schedule, views_crud
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.index),
+    url(r'^logs$', views.log),
+    url(r'^logs/(?P<year>[0-9]{4})$', views.log),
+    url(r'^logs/(?P<year>[0-9]{4})/(?P<month>[0-9]{1,2})$', views.log),
+    url(r'^logs/(?P<year>[0-9]{4})/(?P<month>[0-9]{1,2})/(?P<day>[0-9]{1,2})$', views.log),
 
     url(r'^reservation/create/', views_crud.create_or_edit_reservation),
     url(r'^reservation/edit/(?P<reservation_id>[0-9]+)/$', views_crud.create_or_edit_reservation),
