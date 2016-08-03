@@ -2,6 +2,7 @@ from django.shortcuts import render
 from models import Camp, Resource, AuditLog, Reservation
 from datetime import datetime, timedelta
 
+
 def index(request, errors=None):
     today = datetime.now().date()
     tomorrow = today + timedelta(1)
@@ -16,6 +17,7 @@ def index(request, errors=None):
         'date': datetime.now().date()
         }
     return render(request, 'index.html', data)
+
 
 def log(request, year=None, month=None, day=None):
     if year:
@@ -35,7 +37,7 @@ def log(request, year=None, month=None, day=None):
             end_date = datetime(end_year, end_month, 1)
         else:
             end_date = datetime(start_year + 1, 1, 1)
-                
+
         logs = AuditLog.objects.filter(timestamp__gte=start_date) \
                                .filter(timestamp__lt=end_date) \
                                .order_by('timestamp')
@@ -45,6 +47,7 @@ def log(request, year=None, month=None, day=None):
         'logs': logs
     }
     return render(request, 'logs.html', data)
+
 
 def group_reservations_by_camp(reservations):
     """This method takes in a list of reservation objects that are assumed
@@ -67,5 +70,5 @@ def group_reservations_by_camp(reservations):
         last_camp_reservations.append(reservation)
     if last_camp_reservations:
         reservation_camps.append((last_camp, last_camp_reservations))
-        
+
     return reservation_camps

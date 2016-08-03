@@ -1,4 +1,3 @@
-from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from models import Reservation, Camp, Resource
 import settings
@@ -20,19 +19,22 @@ def view_by_camp(request):
         }
     return render(request, 'schedule/bycamp.html', data)
 
+
 def view_by_resource(request):
     if 'resource_id' not in request.GET or not request.GET['resource_id']:
         return views.index(request, ["You must select a resource"])
     resource_id = int(request.GET['resource_id'])
     resource = get_object_or_404(Resource, pk=resource_id)
-    reservations = Reservation.objects.filter(resources__id__exact=resource_id) \
-                                      .filter(start_time__gt=datetime.now()) \
-                                      .order_by('start_time', 'end_time')
+    reservations = Reservation.objects \
+                              .filter(resources__id__exact=resource_id) \
+                              .filter(start_time__gt=datetime.now()) \
+                              .order_by('start_time', 'end_time')
     data = {
         'reservations': group_reservations_by_day(reservations),
         'resource_name': resource.name,
         }
     return render(request, 'schedule/byresource.html', data)
+
 
 def view_by_date(request):
     # start date is required, end date is optional.  if end date is not
@@ -59,6 +61,7 @@ def view_by_date(request):
         }
     return render(request, 'schedule/bydate.html', data)
 
+
 def group_reservations_by_day(reservations):
     """This method takes in a list of reservation objects that are assumed
     to be sorted by date and time.  It returns a list of pairs, each
@@ -80,5 +83,5 @@ def group_reservations_by_day(reservations):
         last_day_reservations.append(reservation)
     if last_day_reservations:
         reservation_days.append((last_day, last_day_reservations))
-        
+
     return reservation_days

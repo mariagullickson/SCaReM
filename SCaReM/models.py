@@ -1,11 +1,13 @@
 from django.db import models
 from datetime import datetime, timedelta
 
+
 class Tag(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
+
 
 class Resource(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -14,12 +16,14 @@ class Resource(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+
 class Camp(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name
+
 
 class Reservation(models.Model):
     event = models.CharField(max_length=100)
@@ -45,7 +49,7 @@ class Reservation(models.Model):
         result = super(Reservation, self).delete()
         return result
 
-    def save(self, audit=True):
+    def save(self, audit=True, **kwargs):
         is_add = not self.id
 
         # save the reservation
@@ -58,10 +62,10 @@ class Reservation(models.Model):
             audit.reservation_representation = str(self)
             audit.action = AuditLog.ADD if is_add else AuditLog.MODIFY
             audit.timestamp = datetime.now()
-            audit.save()
-            
+            audit.save(**kwargs)
+
         return result
-        
+
     def resource_names(self):
         return ", ".join([r.name for r in self.resources.all()])
 
@@ -76,8 +80,8 @@ class Reservation(models.Model):
         for resource in resources:
             resource_conflicts = Reservation.objects.filter(
                 resources__id__exact=resource.id).filter(
-                    start_time__lt = self.end_time).filter(
-                        end_time__gt = self.start_time)
+                    start_time__lt=self.end_time).filter(
+                        end_time__gt=self.start_time)
             for conflict in resource_conflicts:
                 conflicts[conflict.id] = conflict
 
@@ -86,8 +90,9 @@ class Reservation(models.Model):
         # so remove it if it's there
         if self.id in conflicts:
             del conflicts[self.id]
-                
+
         return conflicts.values()
+
 
 class AuditLog(models.Model):
     ADD = 'add'
