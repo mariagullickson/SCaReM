@@ -14,6 +14,7 @@
     <div class='card'>
       <p>Reservations by date:</p>
       <form action="/schedule/bydate">
+        {% csrf_token %}
         <p>
           <input class="datepicker" id="id_start_date" name="start_date" size="10" type="text" /><label class="datetimeshortcuts" />
           to
@@ -26,6 +27,7 @@
     <div class='card'>
       <p>Reservations by camp:</p>
       <form action="/schedule/bycamp">
+        {% csrf_token %}
         <p>
           <select id="id_camp" name="camp_id">
             <option value="">---------</option>
@@ -43,6 +45,7 @@
     <div class='card'>
       <p>Reservations by resource:</p>
       <form action="/schedule/byresource">
+        {% csrf_token %}
         <p>
           <select id="id_resource" name="resource_id">
             <option value="">---------</option>
@@ -56,6 +59,32 @@
         <p><input type="submit" value="View" /></p>
       </form>
     </div>
+  </div>
+
+  <div class='glance'>
+   <h2><a href="/schedule/bydate?start_date={{date.month|stringformat:"02d"}}%2F{{date.day|stringformat:"02d"}}%2F{{date.year}}">Today at a glance</a></h2>
+    {% if not today %}
+      <h3>No reservations today</h3>
+    {% endif %}
+    {% for camp in today %}
+      <h3><a href="/schedule/bycamp/?camp_id={{ camp.0.id }}">{{ camp.0.name }}</a></h3>
+      <ul>
+        {% for reservation in camp.1 %}
+          <div class='one_event'>
+            <li class='event_glance'>
+              {{ reservation.event }} from {{ reservation.start_time.time }} to {{ reservation.end_time.time }}
+            </li>
+            <li class='event_detail'>
+              {{ reservation.event }} from {{ reservation.start_time.time }} to {{ reservation.end_time.time }}
+              <br/>
+              Using {{ reservation.resource_names }}
+              <br/>
+              Reserved by {{ reservation.owner }}
+            </li>
+          </div>
+        {% endfor %}
+      </ul>
+    {% endfor %}
   </div>
 
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>

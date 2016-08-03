@@ -1,12 +1,19 @@
 from django.shortcuts import render
-from models import Camp, Resource, AuditLog
+from models import Camp, Resource, AuditLog, Reservation
 from datetime import datetime, timedelta
 
 def index(request, errors=None):
+    today = datetime.now().date()
+    tomorrow = today + timedelta(1)
+    reservations = Reservation.objects.filter(start_time__gte=today) \
+                                      .filter(end_time__lt=tomorrow) \
+                                      .order_by('camp__name', 'start_time')
     data = {
         'camps': Camp.objects.all(),
         'resources': Resource.objects.all(),
-        'error_messages': errors
+        'error_messages': errors,
+        'today': group_reservations_by_camp(reservations),
+        'date': datetime.now().date()
         }
     return render(request, 'index.html', data)
 
@@ -38,3 +45,27 @@ def log(request, year=None, month=None, day=None):
         'logs': logs
     }
     return render(request, 'logs.html', data)
+
+def group_reservations_by_camp(reservations):
+    """This method takes in a list of reservation objects that are assumed
+    to be sorted by camp and time.  It returns a list of pairs, each
+    representation one camp's of reservations.  The first item in
+    the pair is the camp.  The second item is a list of reservations
+    that occur in that camp.
+
+    """
+    reservation_camps = []
+    last_camp = ''
+    last_camp_reservations = []
+    for reservation in reservations:
+        this_camp = reservation.camp
+        if not last_camp or this_camp.id != last_camp.id:
+            if last_camp_reservations:
+                reservation_camps.append((last_camp, last_camp_reservations))
+            last_camp = this_camp
+            last_camp_reservations = []
+        last_camp_reservations.append(reservation)
+    if last_camp_reservations:
+        reservation_camps.append((last_camp, last_camp_reservations))
+        
+    return reservation_camps

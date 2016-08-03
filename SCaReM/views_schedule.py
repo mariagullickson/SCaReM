@@ -50,7 +50,7 @@ def view_by_date(request):
                                      settings.DATETIME_FORMAT)
 
     reservations = Reservation.objects.filter(start_time__gte=start_time) \
-                                      .filter(end_time__lte=end_time) \
+                                      .filter(end_time__lt=end_time) \
                                       .order_by('start_time', 'end_time')
     data = {
         'reservations': group_reservations_by_day(reservations),

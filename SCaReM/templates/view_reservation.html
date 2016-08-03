@@ -5,9 +5,11 @@
         <div class='no-changes'>No changes allowed*.</div>
       {% else %}
         <form action="/reservation/edit/{{ reservation.id }}">
+          {% csrf_token %}
           <input type="submit" value="Edit">
         </form>
         <form action="/reservation/delete/{{ reservation.id }}">
+          {% csrf_token %}
           <input type="submit" value="Delete">
         </form>
       {% endif %}

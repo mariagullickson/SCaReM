@@ -17,3 +17,17 @@ body {
     background-position: center 25px;
     background-attachment: fixed;
 }
+
+.event_detail {
+    padding: 8px;
+    border: 1px solid darkgreen;
+    display: none;
+}
+
+.one_event {
+    display: table;
+}
+
+.glance {
+    padding: 50px;
+}
