@@ -178,19 +178,29 @@ def create_or_edit_reservation(request, reservation_id=None):
 
             # save the reservation if there were no errors
             if not error:
+                is_new = not reservation.id
+                
                 # if it's a new reservation, check for an easter egg
-                if not reservation.id and reservation.event in EASTER_EGGS:
+                if not is_new and reservation.event in EASTER_EGGS:
                     request.session['easter'] = EASTER_EGGS[reservation.event]
+                elif 'easter' in request.session:
+                    del request.session['easter']
 
                 reservation.save()
                 reservation.resources = resources
                 reservation.save(False)
+                messages.success(request, "%s %s has been %s"
+                                 % (reservation.camp.name, reservation.event,
+                                    "created" if is_new else "updated"))
 
                 # remember this users camp and owner name
                 request.session['last_camp_id'] = reservation.camp.id
                 request.session['last_owner'] = reservation.owner
 
-                return HttpResponseRedirect('/')
+                if 'another' in request.POST:
+                    return HttpResponseRedirect('/reservation/create')
+                else:
+                    return HttpResponseRedirect('/')
         except Exception as e:
             messages.error(request, e.message or e.args[1])
     elif reservation_id:
