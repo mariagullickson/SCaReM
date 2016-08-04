@@ -1,13 +1,14 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from models import Reservation, Camp, Resource
 import settings
-import views
 from datetime import datetime
+from django.contrib import messages
 
 
 def view_by_camp(request):
     if 'camp_id' not in request.GET or not request.GET['camp_id']:
-        return views.index(request, ["You must select a camp"])
+        messages.error(request, "You must select a camp.")
+        return redirect('/')
     camp_id = int(request.GET['camp_id'])
     reservations = Reservation.objects.filter(camp__id__exact=camp_id) \
                                       .filter(start_time__gt=datetime.now()) \
@@ -22,7 +23,8 @@ def view_by_camp(request):
 
 def view_by_resource(request):
     if 'resource_id' not in request.GET or not request.GET['resource_id']:
-        return views.index(request, ["You must select a resource"])
+        messages.error(request, "You must select a resource.")
+        return redirect('/')
     resource_id = int(request.GET['resource_id'])
     resource = get_object_or_404(Resource, pk=resource_id)
     reservations = Reservation.objects \
@@ -40,7 +42,8 @@ def view_by_date(request):
     # start date is required, end date is optional.  if end date is not
     # specified, use the start date
     if 'start_date' not in request.GET or not request.GET['start_date']:
-        return views.index(request, ["You must select a date"])
+        messages.error(request, "You must select a date.")
+        return redirect('/')
     start_time = datetime.strptime(request.GET['start_date'] + " 12 : 00 AM",
                                    settings.DATETIME_FORMAT)
     use_end_date = 'end_date' in request.GET and request.GET['end_date']

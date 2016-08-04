@@ -22,8 +22,8 @@
   <body>
     <h1>SCaReM - The Summer Camp Resource Manager</h1>
 
-    {% for error_message in error_messages %}
-      <p class="error">{{ error_message }}</p>
+    {% for message in messages %}
+      <p class="error">{{ message }}</p>
     {% endfor %}
 
     {% block content %}

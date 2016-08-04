@@ -3,7 +3,7 @@ from models import Camp, Resource, AuditLog, Reservation
 from datetime import datetime, timedelta
 
 
-def index(request, errors=None):
+def index(request):
     today = datetime.now().date()
     tomorrow = today + timedelta(1)
     reservations = Reservation.objects.filter(start_time__gte=today) \
@@ -12,7 +12,6 @@ def index(request, errors=None):
     data = {
         'camps': Camp.objects.all(),
         'resources': Resource.objects.all(),
-        'error_messages': errors,
         'today': group_reservations_by_camp(reservations),
         'date': datetime.now().date()
         }

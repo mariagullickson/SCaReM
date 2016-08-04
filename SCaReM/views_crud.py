@@ -1,10 +1,10 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
+from django.shortcuts import render, get_object_or_404, redirect
 import models
 from datetime import datetime
 import json
 import settings
-import views
 
 
 def delete_reservation(request, reservation_id=None):
@@ -14,9 +14,10 @@ def delete_reservation(request, reservation_id=None):
         # they've confirmed.  actually delete the reservation and got
         # back to the index
         reservation.delete()
-        return views.index(request,
-                           ["%s %s has been deleted"
-                            % (reservation.camp.name, reservation.event)])
+        messages.success(request,
+                         "%s %s has been deleted"
+                         % (reservation.camp.name, reservation.event))
+        return redirect('/')
     else:
         # show the confirmation page before doing anything
         data = {
@@ -28,6 +29,7 @@ def delete_reservation(request, reservation_id=None):
 def create_or_edit_reservation(request, reservation_id=None):
     resources = models.Resource.objects.all()
     tag_resources = {}
+    error = False
     for resource in resources:
         for tag in resource.tags.all():
             if tag.id not in tag_resources:
@@ -40,7 +42,6 @@ def create_or_edit_reservation(request, reservation_id=None):
         'tags': models.Tag.objects.all(),
         'tag_resources': json.dumps(tag_resources),
     }
-    errors = []
 
     if request.method == 'POST':
         try:
@@ -52,17 +53,20 @@ def create_or_edit_reservation(request, reservation_id=None):
 
             reservation.event = request.POST['event']
             if not reservation.event:
-                errors.append("You must specify an Event")
+                messages.error(request, "You must specify an Event.")
+                error = True
             form_values['event_value'] = reservation.event
 
             reservation.owner = request.POST['owner']
             if not reservation.owner:
-                errors.append("You must specify an Owner")
+                messages.error(request, "You must specify an Owner.")
+                error = True
             form_values['owner_value'] = reservation.owner
 
             camp_id = request.POST['camp']
             if not camp_id:
-                errors.append("You must specify a Camp")
+                messages.error(request, "You must specify a Camp.")
+                error = True
             else:
                 reservation.camp = get_object_or_404(models.Camp, pk=camp_id)
                 form_values['camp_value'] = reservation.camp.id
@@ -72,7 +76,9 @@ def create_or_edit_reservation(request, reservation_id=None):
                 get_object_or_404(models.Resource, pk=resource_id)
                 for resource_id in resource_ids]
             if not resources:
-                errors.append("You must specify at least one Resource")
+                messages.error(request,
+                               "You must specify at least one Resource.")
+                error = True
             form_values['resource_values'] = [
                 resource.id for resource in resources]
 
@@ -82,11 +88,13 @@ def create_or_edit_reservation(request, reservation_id=None):
                     datetime.strptime(date, settings.DATE_FORMAT)
                     form_values['date_value'] = date
                 except:
-                    errors.append("Invalid Date. "
-                                  "Should be formatted as MM/DD/YYYY")
+                    messages.error(request, "Invalid Date. "
+                                   "Should be formatted as MM/DD/YYYY.")
+                    error = True
                     date = None
             else:
-                errors.append("You must specify a Date")
+                messages.error(request, "You must specify a Date.")
+                error = True
 
             start_time = request.POST['start_time']
             if start_time:
@@ -94,11 +102,13 @@ def create_or_edit_reservation(request, reservation_id=None):
                     datetime.strptime(start_time, settings.TIME_FORMAT)
                     form_values['start_time_value'] = start_time
                 except:
-                    errors.append("Invalid Start Time. "
-                                  "Should be formatted as HH : MM {am/pm}.")
+                    messages.error(request, "Invalid Start Time. "
+                                   "Should be formatted as HH : MM {am/pm}.")
+                    error = True
                     start_time = None
             else:
-                errors.append("You must specify a Start Time")
+                messages.error(request, "You must specify a Start Time.")
+                error = True
 
             end_time = request.POST['end_time']
             if end_time:
@@ -106,11 +116,13 @@ def create_or_edit_reservation(request, reservation_id=None):
                     datetime.strptime(end_time, settings.TIME_FORMAT)
                     form_values['end_time_value'] = end_time
                 except:
-                    errors.append("Invalid End Time. "
-                                  "Should be formatted as HH : MM {am/pm}.")
+                    messages.error(request, "Invalid End Time. "
+                                   "Should be formatted as HH : MM {am/pm}.")
+                    error = True
                     end_time = None
             else:
-                errors.append("You must specify a End Time")
+                messages.error(request, "You must specify a End Time.")
+                error = True
 
             if date and start_time:
                 reservation.start_time = datetime.strptime(
@@ -122,13 +134,16 @@ def create_or_edit_reservation(request, reservation_id=None):
                     settings.DATETIME_FORMAT)
             if (reservation.start_time and reservation.end_time and
                     reservation.end_time <= reservation.start_time):
-                errors.append("Reservation must end after it starts")
+                messages.error(request,
+                               "Reservation must end after it starts.")
+                error = True
 
             # don't allow reservations less than a week in the future
             # (which includes reservations in the past)
             if reservation.start_time and reservation.is_frozen():
-                errors.append("Reservations must be at least one week "
-                              "in the future")
+                messages.error(request, "Reservations must be at least one "
+                               "week in the future.")
+                error = True
 
             # look for conflicts
             if date and start_time and end_time:
@@ -147,17 +162,18 @@ def create_or_edit_reservation(request, reservation_id=None):
                         conflict.start_time.strftime(settings.TIME_FORMAT),
                         conflict.end_time.strftime("%I:%M%P"))
 
-                    errors.append(message)
+                    messages.error(request, message)
+                    error = True
 
             # save the reservation if there were no errors
-            if not errors:
+            if not error:
                 reservation.save()
                 reservation.resources = resources
                 reservation.save(False)
 
                 return HttpResponseRedirect('/')
         except Exception as e:
-            errors.append(e.message or e.args[1])
+            messages.error(request, e.message or e.args[1])
     elif reservation_id:
         # editing an existing reservation.  load it from the database
         # and fill in form fields
@@ -175,7 +191,6 @@ def create_or_edit_reservation(request, reservation_id=None):
             settings.TIME_FORMAT)
         form_values['reservation_id'] = reservation_id
 
-    form_values['error_messages'] = errors
     if reservation_id:
         form_values['action'] = '/reservation/edit/%s/' % reservation_id
     else:
