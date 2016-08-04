@@ -171,6 +171,10 @@ def create_or_edit_reservation(request, reservation_id=None):
                 reservation.resources = resources
                 reservation.save(False)
 
+                # remember this users camp and owner name
+                request.session['last_camp_id'] = reservation.camp.id
+                request.session['last_owner'] = reservation.owner
+
                 return HttpResponseRedirect('/')
         except Exception as e:
             messages.error(request, e.message or e.args[1])
@@ -190,6 +194,13 @@ def create_or_edit_reservation(request, reservation_id=None):
         form_values['end_time_value'] = reservation.end_time.strftime(
             settings.TIME_FORMAT)
         form_values['reservation_id'] = reservation_id
+    else:
+        # if we are starting a fresh reservation, prefill camp and owner
+        # with the last values used in this session
+        if 'last_owner' in request.session:
+            form_values['owner_value'] = request.session['last_owner']
+        if 'last_camp_id' in request.session:
+            form_values['camp_value'] = request.session['last_camp_id']
 
     if reservation_id:
         form_values['action'] = '/reservation/edit/%s/' % reservation_id
