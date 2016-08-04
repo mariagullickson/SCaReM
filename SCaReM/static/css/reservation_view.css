@@ -50,6 +50,22 @@
     float: left;
 }
 
+@media only screen and (max-width: 700px) {
+    .view_reservation .actions {
+        width: 25%;
+    }
+    
+    .view_reservation .metadata {
+        width: 70%;
+        float: right;
+    }
+
+    .view_reservation .resources {
+        width: 70%;
+        float: right;
+    }
+}
+
 .view_reservation .clear {
     clear: both;
 }
