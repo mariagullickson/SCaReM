@@ -6,6 +6,10 @@
 {% endblock %}
 
 {% block content %}
+  {% if easter %}
+  <img class="easteregg" src="/static/img/easter/{{ easter }}.gif"/>
+  {% endif %}
+  
   <div class='main'>
     <div class='card'>
       <p><a href="reservation/create">Create a reservation</a></p>

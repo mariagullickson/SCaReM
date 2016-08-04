@@ -7,6 +7,17 @@ import json
 import settings
 
 
+EASTER_EGGS = {
+    "Dance!": "dance",
+    "Dutch Auction!": "dutchauction",
+    "Hayride!": "hayride",
+    "Kangaroo Court!": "kangaroocourt",
+    "Movie Night!": "movienight",
+    "Pool Party!": "poolparty",
+    "Scavenger Hunt!": "scavengerhunt",
+    }
+
+
 def delete_reservation(request, reservation_id=None):
     reservation = get_object_or_404(models.Reservation, pk=reservation_id)
 
@@ -167,6 +178,10 @@ def create_or_edit_reservation(request, reservation_id=None):
 
             # save the reservation if there were no errors
             if not error:
+                # if it's a new reservation, check for an easter egg
+                if not reservation.id and reservation.event in EASTER_EGGS:
+                    request.session['easter'] = EASTER_EGGS[reservation.event]
+
                 reservation.save()
                 reservation.resources = resources
                 reservation.save(False)

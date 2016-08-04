@@ -13,8 +13,14 @@ def index(request):
         'camps': Camp.objects.all(),
         'resources': Resource.objects.all(),
         'today': group_reservations_by_camp(reservations),
-        'date': datetime.now().date()
+        'date': datetime.now().date(),
         }
+
+    # check for an easter egg, show it now and clear it out
+    if 'easter' in request.session:
+        data['easter'] = request.session['easter']
+        del request.session['easter']
+        
     return render(request, 'index.html', data)
 
 

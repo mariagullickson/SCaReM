@@ -37,3 +37,8 @@ body {
 .glance {
     padding: 50px;
 }
+
+.easteregg {
+    display: block;
+    margin: auto;
+}
