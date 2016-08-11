@@ -20,6 +20,22 @@ class Resource(models.Model):
 
 class Camp(models.Model):
     name = models.CharField(max_length=50, unique=True)
+    color = models.CharField(max_length=7,
+                             blank=False,
+                             choices=(
+                                 ("#ff99ff", "pink"),
+                                 ("#ff9999", "salmon"),
+                                 ("#ff9933", "orange"),
+                                 ("#cc9933", "mustard"),
+                                 ("#cccc99", "tan"),
+                                 ("#ccff33", "yellow"),
+                                 ("#99ff00", "limegreen"),
+                                 ("#00ff66", "green"),
+                                 ("#00ccff", "blue"),
+                                 ("#9999ff", "purple"),
+                                 ("#999999", "grey"),
+                                 ("#999966", "greengrey"),
+                             ))
 
     def __str__(self):
         return self.name
