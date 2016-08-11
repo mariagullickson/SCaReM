@@ -15,6 +15,8 @@ EASTER_EGGS = {
     "Movie Night!": "movienight",
     "Pool Party!": "poolparty",
     "Scavenger Hunt!": "scavengerhunt",
+    "Olympics!": "olympics",
+    "King Ball!": "kingball",
     }
 
 
