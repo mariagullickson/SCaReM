@@ -70,16 +70,16 @@
     {% if not today %}
       <h3>No reservations today</h3>
     {% endif %}
-    {% for camp in today %}
-      <h3><a href="/schedule/bycamp/?camp_id={{ camp.0.id }}">{{ camp.0.name }}</a></h3>
+    {% for resource in today %}
+      <h3><a href="/schedule/byresource/?resource_id={{ resource.0 }}">{{ resource.1 }}</a></h3>
       <ul>
-        {% for reservation in camp.1 %}
+        {% for reservation in resource.2 %}
           <div class='one_event'>
             <li class='event_glance'>
-              {{ reservation.event }} from {{ reservation.start_time.time }} to {{ reservation.end_time.time }}
+              {{ reservation.event }} at {{ reservation.camp.name }} from {{ reservation.start_time.time }} to {{ reservation.end_time.time }}
             </li>
             <li class='event_detail'>
-              {{ reservation.event }} from {{ reservation.start_time.time }} to {{ reservation.end_time.time }}
+              {{ reservation.event }} at {{ reservation.camp.name }} from {{ reservation.start_time.time }} to {{ reservation.end_time.time }}
               <br/>
               Using {{ reservation.resource_names }}
               <br/>

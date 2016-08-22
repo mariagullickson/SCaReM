@@ -8,11 +8,11 @@ def index(request):
     tomorrow = today + timedelta(1)
     reservations = Reservation.objects.filter(start_time__gte=today) \
                                       .filter(end_time__lt=tomorrow) \
-                                      .order_by('camp__name', 'start_time')
+                                      .order_by('start_time')
     data = {
         'camps': Camp.objects.all(),
         'resources': Resource.objects.all(),
-        'today': group_reservations_by_camp(reservations),
+        'today': group_reservations_by_resource(reservations),
         'date': datetime.now().date(),
         }
 
@@ -20,7 +20,7 @@ def index(request):
     if 'easter' in request.session:
         data['easter'] = request.session['easter']
         del request.session['easter']
-        
+
     return render(request, 'index.html', data)
 
 
@@ -54,26 +54,24 @@ def log(request, year=None, month=None, day=None):
     return render(request, 'logs.html', data)
 
 
-def group_reservations_by_camp(reservations):
+def group_reservations_by_resource(reservations):
     """This method takes in a list of reservation objects that are assumed
-    to be sorted by camp and time.  It returns a list of pairs, each
-    representation one camp's of reservations.  The first item in
-    the pair is the camp.  The second item is a list of reservations
-    that occur in that camp.
+    to be sorted by time.  It returns a list of tuples, each
+    representing one resources's of reservations.  The first item in
+    the pair is the resource id; the second item is the resource name;
+    the third item is a list of reservations that use that resource.
+    Because reservations may use more than one resource, the final
+    output will likely duplicate reservations in multiple lists.
 
     """
-    reservation_camps = []
-    last_camp = ''
-    last_camp_reservations = []
+    reservation_resources = {}
+    resource_names = {}
     for reservation in reservations:
-        this_camp = reservation.camp
-        if not last_camp or this_camp.id != last_camp.id:
-            if last_camp_reservations:
-                reservation_camps.append((last_camp, last_camp_reservations))
-            last_camp = this_camp
-            last_camp_reservations = []
-        last_camp_reservations.append(reservation)
-    if last_camp_reservations:
-        reservation_camps.append((last_camp, last_camp_reservations))
+        for resource in reservation.resources.all():
+            if resource.id not in reservation_resources:
+                resource_names[resource.id] = resource.name
+                reservation_resources[resource.id] = []
+            reservation_resources[resource.id].append(reservation)
 
-    return reservation_camps
+    return [(key, resource_names[key], value)
+            for key, value in reservation_resources.iteritems()]
