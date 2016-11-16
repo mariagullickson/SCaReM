@@ -50,6 +50,19 @@
       </div>
     </div>
 
+    <div class="form-row time">
+      <div>
+        <label class="required" for="id_date">Time:</label>
+        <p class="datetime">
+          <label>Date:</label>
+          <input class="datepicker" id="id_date" name="date" size="10" type="text" value="{{ date_value }}" />
+          <label class="datetimeshortcuts" />
+        </p>
+        <p class="datetime"><label>Start Time:</label> <input class="timepicker" id="id_start_time" name="start_time" size="10" type="text" value="{{ start_time_value }}" /></p>
+        <p class="datetime"><label>End Time:</label> <input class="timepicker" id="id_end_time" name="end_time" size="10" type="text" value="{{ end_time_value }}" /></p>
+      </div>
+    </div>
+
     <div class="form-row field-resources">
       <div>
         <label class="required" for="id_resources">Resources:</label>
@@ -77,19 +90,6 @@
       </div>
     </div>
     
-    <div class="form-row time">
-      <div>
-        <label class="required" for="id_date">Time:</label>
-        <p class="datetime">
-          <label>Date:</label>
-          <input class="datepicker" id="id_date" name="date" size="10" type="text" value="{{ date_value }}" />
-          <label class="datetimeshortcuts" />
-        </p>
-        <p class="datetime"><label>Start Time:</label> <input class="timepicker" id="id_start_time" name="start_time" size="10" type="text" value="{{ start_time_value }}" /></p>
-        <p class="datetime"><label>End Time:</label> <input class="timepicker" id="id_end_time" name="end_time" size="10" type="text" value="{{ end_time_value }}" /></p>
-      </div>
-    </div>
-
     <input type="submit" name="save" value="Save Reservation" />
     <input type="submit" name="another" value="Save and Add Another" />
   </form>
