@@ -35,5 +35,13 @@
       {% endfor %}
   </div>
 
+  {% if reservation.notes %}
+    <div class='notes-outer'>
+    <div class='notes'>
+      <pre>{{ reservation.notes }}</pre>
+    </div>
+    </div>
+  {% endif %}
+
   <div class='clear'></div>
 </div>

@@ -38,6 +38,17 @@ body {
     padding: 50px;
 }
 
+.notes {
+    border-width: 1px;
+    border-color: grey;
+    border-radius: 5px;
+    border-style: dotted;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    padding: 5px;
+}
+
+
 .easteregg {
     display: block;
     margin: auto;

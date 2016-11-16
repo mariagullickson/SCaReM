@@ -48,6 +48,7 @@ class Reservation(models.Model):
     resources = models.ManyToManyField(Resource)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+    notes = models.TextField(max_length=1000, null=True, blank=True)
 
     def __str__(self):
         return "%s %s on %s" % (

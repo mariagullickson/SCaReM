@@ -84,6 +84,10 @@
               Using {{ reservation.resource_names }}
               <br/>
               Reserved by {{ reservation.owner }}
+              {% if reservation.notes %}
+                <br/>
+                <pre class="notes">{{ reservation.notes }}</pre>
+              {% endif %}
             </li>
           </div>
         {% endfor %}

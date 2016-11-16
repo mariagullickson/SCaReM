@@ -76,6 +76,9 @@ def create_or_edit_reservation(request, reservation_id=None):
                 error = True
             form_values['owner_value'] = reservation.owner
 
+            reservation.notes = request.POST['notes']
+            form_values['notes_value'] = reservation.notes
+
             camp_id = request.POST['camp']
             if not camp_id:
                 messages.error(request, "You must specify a Camp.")
@@ -211,6 +214,7 @@ def create_or_edit_reservation(request, reservation_id=None):
         reservation = get_object_or_404(models.Reservation, pk=reservation_id)
         form_values['event_value'] = reservation.event
         form_values['owner_value'] = reservation.owner
+        form_values['notes_value'] = reservation.notes
         form_values['camp_value'] = reservation.camp.id
         form_values['resource_values'] = [
             resource.id for resource in reservation.resources.all()]
