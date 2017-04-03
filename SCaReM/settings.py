@@ -79,11 +79,6 @@ WSGI_APPLICATION = 'SCaReM.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'scarem',
-        'USER': os.environ.get('SCAREM_DB_USER', ''),
-        'PASSWORD': os.environ.get('SCAREM_DB_PASSWORD', ''),
-        'HOST': 'localhost',
-        'PORT': '5432',
     }
 }
 
