@@ -125,9 +125,12 @@ USE_TZ = False
 STATIC_URL = '/static/'
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-)
+
+import django
+DJANGO_ADMIN_MEDIA_DIR = os.path.join(os.path.dirname(django.__file__), 'contrib' 'admin')
+STATICFILES_DIRS = [
+    DJANGO_ADMIN_MEDIA_DIR
+]
 
 DATE_FORMAT = "%m/%d/%Y"
 TIME_FORMAT = "%I : %M %p"
