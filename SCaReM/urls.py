@@ -15,17 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-import settings
 import views
 import views_schedule
 import views_crud
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {
-        'document_root': settings.STATIC_ROOT,
-    }),
-    
     url(r'^$', views.index),
     url(r'^logs$', views.log),
     url(r'^logs/(?P<year>[0-9]{4})$', views.log),
