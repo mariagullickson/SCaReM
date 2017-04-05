@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+import settings
 import views
 import views_schedule
 import views_crud
