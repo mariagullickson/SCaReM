@@ -127,7 +127,7 @@ PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 
 import django
-DJANGO_ADMIN_MEDIA_DIR = os.path.join(os.path.dirname(django.__file__), 'contrib' 'admin')
+DJANGO_ADMIN_MEDIA_DIR = os.path.join(os.path.dirname(django.__file__), 'contrib'. 'admin')
 STATICFILES_DIRS = [
     DJANGO_ADMIN_MEDIA_DIR
 ]
