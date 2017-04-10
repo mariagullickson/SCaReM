@@ -186,7 +186,7 @@ def create_or_edit_reservation(request, reservation_id=None):
                 is_new = not reservation.id
                 
                 # if it's a new reservation, check for an easter egg
-                if not is_new and reservation.event in EASTER_EGGS:
+                if is_new and reservation.event in EASTER_EGGS:
                     request.session['easter'] = EASTER_EGGS[reservation.event]
                 elif 'easter' in request.session:
                     del request.session['easter']
