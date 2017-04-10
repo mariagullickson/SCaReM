@@ -1,3 +1,7 @@
+* {
+    font-size: 24px;
+}
+
 .card {
     width: 38%;
     float: left;
