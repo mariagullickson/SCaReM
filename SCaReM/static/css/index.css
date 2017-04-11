@@ -2,6 +2,10 @@
     font-size: 24px;
 }
 
+.ui-datepicker-calendar {
+    font-size: 20px;
+}
+
 .card {
     width: 38%;
     float: left;
