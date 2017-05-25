@@ -51,7 +51,7 @@ def create_or_edit_reservation(request, reservation_id=None):
 
     form_values = {
         'camps': models.Camp.objects.all(),
-        'resources': models.Resource.objects.all(),
+        'resources': models.Resource.objects.all().order_by('name'),
         'tags': models.Tag.objects.all(),
         'tag_resources': json.dumps(tag_resources),
     }
