@@ -57,6 +57,9 @@ def create_or_edit_reservation(request, reservation_id=None):
     }
 
     if request.method == 'POST':
+        if 'cancel' in request.POST:
+             return HttpResponseRedirect('/')
+
         try:
             # put together the reservation object
             reservation = models.Reservation()
