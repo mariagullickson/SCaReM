@@ -12,6 +12,7 @@ class Tag(models.Model):
 class Resource(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(max_length=500, null=True, blank=True)
+    allow_conflicts = models.NullBooleanField()
     tags = models.ManyToManyField(Tag)
 
     def __str__(self):
@@ -48,6 +49,7 @@ class Reservation(models.Model):
     resources = models.ManyToManyField(Resource)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+    repeat_until = models.DateField(null=True)
     notes = models.TextField(max_length=1000, null=True, blank=True)
 
     def __str__(self):
@@ -92,9 +94,11 @@ class Reservation(models.Model):
     def check_for_conflicts(self, resources):
         # look for conflicts with each resource.  the way we are
         # querying could produce duplicates, so shove them into a dict
-        # by id to eliminate those.
+        # by id to eliminate those.  ignore resources that allow conflicts.
         conflicts = {}
         for resource in resources:
+            if resource.allow_conflicts == True:
+                continue
             resource_conflicts = Reservation.objects.filter(
                 resources__id__exact=resource.id).filter(
                     start_time__lt=self.end_time).filter(

@@ -12,16 +12,27 @@ class TestReservations(TestCase):
         self.resources = []
         self.resources.append(Resource.objects.create(
             name="bathtub graveyard"))
-        self.resources.append(Resource.objects.create(name="cat hall"))
-        self.resources.append(Resource.objects.create(name="barrington bunny"))
+        self.resources.append(Resource.objects.create(name="cat hall", allow_conflicts=None))
+        self.resources.append(Resource.objects.create(name="barrington bunny", allow_conflicts=False))
+        self.resources.append(Resource.objects.create(name="fight", allow_conflicts=True))
 
         # create a reservation
         reservation = Reservation.objects.create(
             start_time=datetime(2000, 1, 15, 12, 30),
             end_time=datetime(2000, 1, 15, 13, 30),
             camp=self.camp)
-        reservation.resources = [self.resources[0], self.resources[1]]
+        reservation.resources = [self.resources[0], self.resources[1], self.resources[3]]
         reservation.save()
+
+    def test_allow_conflicts(self):
+        # set up a reservation using a resource that allows conflicts.
+        # this should be allowed, even though the times overlap
+        reservation = Reservation()
+        reservation.start_time = datetime(2000, 1, 15, 12, 00)
+        reservation.end_time = datetime(2000, 1, 15, 14, 00)
+        conflicts = reservation.check_for_conflicts(
+            [self.resources[2], self.resources[3]])
+        self.assertEqual(0, len(conflicts))
 
     def test_no_conflict_immediately_after(self):
         # set up a reservation that starts as another ends.

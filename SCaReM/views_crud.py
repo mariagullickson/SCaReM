@@ -174,7 +174,8 @@ def create_or_edit_reservation(request, reservation_id=None):
                     # figure out which resources conflict
                     used_resources = [resource for resource
                                       in conflict.resources.all()
-                                      if resource.id in resource_ids]
+                                      if resource.id in resource_ids
+                                      and resource.allow_conflicts != True]
                     message += " They are using %s from %s to %s." % (
                         ", ".join([resource.name for resource
                                    in used_resources]),

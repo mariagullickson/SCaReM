@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'SCaReM.wsgi.application'
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config()
+    'default': dj_database_url.config(default='postgresql://scarem:dieterbaer@localhost/scarem')
 }
 
 SESSION_ENGINE= 'django.contrib.sessions.backends.cached_db'
