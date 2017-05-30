@@ -44,14 +44,14 @@ def view_by_date(request):
     if 'start_date' not in request.GET or not request.GET['start_date']:
         messages.error(request, "You must select a date.")
         return redirect('/')
-    start_time = datetime.strptime(request.GET['start_date'] + " 12 : 00 AM",
+    start_time = datetime.strptime(request.GET['start_date'] + " 12:00 AM",
                                    settings.DATETIME_FORMAT)
     use_end_date = 'end_date' in request.GET and request.GET['end_date']
     if use_end_date:
-        end_time = datetime.strptime(request.GET['end_date'] + " 11 : 59 pm",
+        end_time = datetime.strptime(request.GET['end_date'] + " 11:59 pm",
                                      settings.DATETIME_FORMAT)
     else:
-        end_time = datetime.strptime(request.GET['start_date'] + " 11 : 59 pm",
+        end_time = datetime.strptime(request.GET['start_date'] + " 11:59 pm",
                                      settings.DATETIME_FORMAT)
 
     reservations = Reservation.objects.filter(start_time__gte=start_time) \

@@ -7,3 +7,34 @@ div.time label {
     width: 75px;
     text-align: right;
 }
+
+div.ui-datepicker-header {
+    background: #99cc66 url("images/ui-bg_highlight-soft_75_99cc66_1x100.png") 50% 50% repeat-x;
+}
+
+div.ui-datepicker {
+    width: 12em !important;
+}
+
+div.ui-datepicker-title {
+    line-height: 1.2em !important;
+}
+
+a.ui-datepicker-next, a.ui-datepicker-prev {
+    height: 1.2em !important;
+}
+
+table.ui-datepicker-calendar a.ui-state-default {
+    font-size: 11px;
+    color: #336600;
+    padding: 0.1em 0;
+}
+
+div.ui-timepicker-title {
+    background: #99cc66 url("images/ui-bg_highlight-soft_75_99cc66_1x100.png") 50% 50% repeat-x;
+}
+
+table.ui-timepicker td a.ui-state-default {
+    font-size: 11px;
+    color: #336600;
+}

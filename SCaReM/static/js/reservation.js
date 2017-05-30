@@ -1,6 +1,9 @@
 // date & time pickers
 $('.datepicker').datepicker();
-$('.timepicker').wickedpicker();
+$('.timepicker').timepicker({
+    showPeriod: true,
+    showLeadingZero: true
+});
 
 // filtering resources by tag
 $('#id_tag').change(function() {

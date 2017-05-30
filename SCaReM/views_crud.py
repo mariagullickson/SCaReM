@@ -122,7 +122,7 @@ def create_or_edit_reservation(request, reservation_id=None):
                     form_values['start_time_value'] = start_time
                 except:
                     messages.error(request, "Invalid Start Time. "
-                                   "Should be formatted as HH : MM {am/pm}.")
+                                   "Should be formatted as HH:MM {am/pm}.")
                     error = True
                     start_time = None
             else:
@@ -136,7 +136,7 @@ def create_or_edit_reservation(request, reservation_id=None):
                     form_values['end_time_value'] = end_time
                 except:
                     messages.error(request, "Invalid End Time. "
-                                   "Should be formatted as HH : MM {am/pm}.")
+                                   "Should be formatted as HH:MM {am/pm}.")
                     error = True
                     end_time = None
             else:
