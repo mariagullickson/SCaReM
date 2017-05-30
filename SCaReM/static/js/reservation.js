@@ -5,6 +5,12 @@ $('.timepicker').timepicker({
     showLeadingZero: true
 });
 
+// all day button
+function allDay() {
+    $('#id_start_time').val('12:00 AM');
+    $('#id_end_time').val('11:59 PM');
+}
+
 // filtering resources by tag
 $('#id_tag').change(function() {
     if ($('#id_tag').val()) {

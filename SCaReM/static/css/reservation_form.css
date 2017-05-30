@@ -20,6 +20,10 @@ div.ui-datepicker-title {
     line-height: 1.2em !important;
 }
 
+#allday {
+    width: 6em;
+}
+
 a.ui-datepicker-next, a.ui-datepicker-prev {
     height: 1.2em !important;
 }
