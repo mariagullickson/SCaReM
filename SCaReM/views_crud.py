@@ -168,8 +168,9 @@ def __assemble_reservation(request, form_values):
     return (reservation, resources, error)
 
 
-def __check_for_conflicts(reservation, resources, request):
-    conflicts = reservation.check_for_conflicts(resources)
+def __check_for_conflicts(reservation, resources, request,
+                          ignore_recurrence=None):
+    conflicts = reservation.check_for_conflicts(resources, ignore_recurrence)
     resource_ids = [resource.id for resource in resources]
     if not conflicts:
         return False
@@ -238,13 +239,24 @@ def __assemble_recurrences(request, form_values, reservation, resources):
     next_start = reservation.start_time + timedelta(days=1)
     next_end = reservation.end_time + timedelta(days=1)
     while next_start < end_time:
+        # assemble the recurrence
         recurrence = deepcopy(reservation)
         recurrence.id = None
         recurrence.start_time = next_start
         recurrence.end_time = next_end
 
+        # add it to the list
         recurrences_to_save.append(recurrence)
 
+        # check for conflicts on this one
+        ignore_recurrence = None
+        if 'reservation_id' in form_values:
+            ignore_recurrence = form_values['reservation_id']
+        if __check_for_conflicts(recurrence, resources, request,
+                                 ignore_recurrence):
+            error = True
+
+        # incrememt for the next one
         next_start = next_start + timedelta(days=1)
         next_end = next_end + timedelta(days=1)
 

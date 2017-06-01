@@ -103,7 +103,7 @@ class Reservation(models.Model):
     def is_frozen(self):
         return self.start_time < datetime.now() + timedelta(weeks=1)
 
-    def check_for_conflicts(self, resources):
+    def check_for_conflicts(self, resources, ignore_recurrence=None):
         # look for conflicts with each resource.  the way we are
         # querying could produce duplicates, so shove them into a dict
         # by id to eliminate those.  ignore resources that allow conflicts.
@@ -119,6 +119,9 @@ class Reservation(models.Model):
             if self.id:
                 resource_conflicts = resource_conflicts.exclude(
                     recurrence_id__exact=self.id)
+            if ignore_recurrence:
+                resource_conflicts = resource_conflicts.exclude(
+                    recurrence_id__exact=ignore_recurrence)
             for conflict in resource_conflicts:
                 conflicts[conflict.id] = conflict
 
