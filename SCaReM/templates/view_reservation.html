@@ -26,6 +26,9 @@
       {{ reservation.event }}
     </div>
 
+    {% if reservation.recurrence_id %}
+    <div class='recur'>This is part of a recurring reservation</div>
+    {% endif %}
     <div class='owner'>Reserved by {{ reservation.owner}}</div>
   </div>
     

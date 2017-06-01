@@ -24,6 +24,76 @@ class TestReservations(TestCase):
         reservation.resources = [self.resources[0], self.resources[1], self.resources[3]]
         reservation.save()
 
+    def test_non_recurring(self):
+        # create a non-recurring reservation
+        reservation = Reservation.objects.create(
+            start_time=datetime(2010, 1, 15, 12, 30),
+            end_time=datetime(2010, 1, 15, 13, 30),
+            camp=self.camp)
+        reservation.save()
+
+        # there should be no recurrences
+        recurrences = reservation.recurrences()
+        self.assertEqual(0, len(recurrences))
+
+    def test_first_recurrence(self):
+        # create a recurring reservation
+        reservation = Reservation.objects.create(
+            start_time=datetime(2011, 1, 15, 12, 30),
+            end_time=datetime(2011, 1, 15, 13, 30),
+            camp=self.camp)
+        reservation.save()
+        reservation.recurrence_id = reservation.id
+        reservation.save()
+        recurrence1 = Reservation.objects.create(
+            start_time=datetime(2011, 1, 16, 12, 30),
+            end_time=datetime(2011, 1, 16, 13, 30),
+            camp=self.camp,
+            recurrence_id = reservation.id)
+        recurrence1.save()
+        recurrence2 = Reservation.objects.create(
+            start_time=datetime(2011, 1, 17, 12, 30),
+            end_time=datetime(2011, 1, 17, 13, 30),
+            camp=self.camp,
+            recurrence_id = reservation.id)
+        recurrence2.save()
+
+        # only the later recurrences should be returned when querying
+        # the first event
+        recurrences = reservation.recurrences()
+        self.assertEqual(2, len(recurrences))
+        self.assertEqual(recurrence1.id, recurrences[0].id)
+        self.assertEqual(recurrence2.id, recurrences[1].id)
+
+    def test_later_recurrence(self):
+        # create a non-recurring reservation
+        reservation = Reservation.objects.create(
+            start_time=datetime(2011, 1, 15, 12, 30),
+            end_time=datetime(2011, 1, 15, 13, 30),
+            camp=self.camp)
+        reservation.save()
+        reservation.recurrence_id = reservation.id
+        reservation.save()
+        recurrence1 = Reservation.objects.create(
+            start_time=datetime(2011, 1, 16, 12, 30),
+            end_time=datetime(2011, 1, 16, 13, 30),
+            camp=self.camp,
+            recurrence_id = reservation.id)
+        recurrence1.save()
+        recurrence2 = Reservation.objects.create(
+            start_time=datetime(2011, 1, 17, 12, 30),
+            end_time=datetime(2011, 1, 17, 13, 30),
+            camp=self.camp,
+            recurrence_id = reservation.id)
+        recurrence2.save()
+
+        # only the later recurrences should be returned when querying
+        # a later event
+        recurrences = recurrence2.recurrences()
+        self.assertEqual(2, len(recurrences))
+        self.assertEqual(recurrence1.id, recurrences[0].id)
+        self.assertEqual(recurrence2.id, recurrences[1].id)
+
     def test_allow_conflicts(self):
         # set up a reservation using a resource that allows conflicts.
         # this should be allowed, even though the times overlap

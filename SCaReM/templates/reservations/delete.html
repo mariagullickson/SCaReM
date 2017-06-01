@@ -9,8 +9,6 @@
 
 {% include "view_reservation.html" with hide_actions=True %}
 
-<p class="error">Are you sure you want to delete this reservation?</p>
-
 <form action="/reservation/delete/{{reservation.id}}">
   {% csrf_token %}
   <input type="hidden" name="confirmed" value="true"/>

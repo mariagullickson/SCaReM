@@ -30,7 +30,7 @@
     padding: 1%;
 }
 
-.view_reservation .owner {
+.view_reservation .owner, .view_reservation .recur {
     color: grey;
     font-size: 75%;
 }

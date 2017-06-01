@@ -1,5 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
+from copy import deepcopy
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
@@ -26,9 +27,19 @@ EASTER_EGGS = {
 def delete_reservation(request, reservation_id=None):
     reservation = get_object_or_404(models.Reservation, pk=reservation_id)
 
+    # if this is a recurring reservation, make sure we are deleting the
+    # primary event
+    if (reservation.recurrence_id
+        and reservation.recurrence_id != reservation.id):
+        return HttpResponseRedirect('/reservation/delete/%s'
+                                    % reservation.recurrence_id)
+
     if 'confirmed' in request.GET and request.GET['confirmed'] == 'true':
-        # they've confirmed.  actually delete the reservation and got
-        # back to the index
+        # they've confirmed.  actually delete the reservation and go
+        # back to the index.  if it's a recurrence, delete them all
+        if reservation.recurrence_id:
+            for recurrence in reservation.recurrences():
+                recurrence.delete()
         reservation.delete()
         messages.success(request,
                          "%s %s has been deleted"
@@ -36,6 +47,11 @@ def delete_reservation(request, reservation_id=None):
         return redirect('/')
 
     # show the confirmation page before doing anything
+    messages.warning(request,
+                     'Are you sure you want to delete this reservation?')
+    if reservation.recurrence_id:
+        messages.warning(request, 'This is a recurring reservation. '
+                         'All events will be deleted.')
     data = {
         'reservation': reservation
     }
@@ -49,6 +65,7 @@ def __assemble_reservation(request, form_values):
     # put together the reservation object
     if 'reservation_id' in request.POST and request.POST['reservation_id']:
         reservation.id = int(request.POST['reservation_id'])
+        form_values['reservation_id'] = reservation.id
 
     reservation.event = request.POST['event']
     if not reservation.event:
@@ -87,8 +104,8 @@ def __assemble_reservation(request, form_values):
             datetime.strptime(date, settings.DATE_FORMAT)
             form_values['date_value'] = date
         except:
-            messages.error(request, "Invalid Date. "
-                           "Should be formatted as MM/DD/YYYY.")
+            messages.error(request,
+                           "Invalid Date. Should be formatted as MM/DD/YYYY.")
             error = True
             date = None
     else:
@@ -176,36 +193,123 @@ def __check_for_conflicts(reservation, resources, request):
     return True
 
 
+def __assemble_recurrences(request, form_values, reservation, resources):
+    error = False
+    recurrences_to_save = []
+
+    # if there are existing recurrences, remove them.  we'll recreate them
+    # as needed.  this is just easier.
+    recurrences_to_remove = reservation.recurrences()
+    reservation.recurrence_id = None
+
+    # if this isn't a recurrence, we have nothing to add.  if it used
+    # to be a recurrence, clear out the recurrence_id
+    if 'repeat_until' not in request.POST or not request.POST['repeat_until']:
+        if reservation.recurrence_id:
+            reservation.recurrence_id = None
+        return (recurrences_to_save, recurrences_to_remove, error)
+
+    # parse out the end date for the recurrence
+    end_time = None
+    end_date = None
+    try:
+        end_date = datetime.strptime(request.POST['repeat_until'],
+                                     settings.DATE_FORMAT)
+        form_values['repeat_until_value'] = request.POST['repeat_until']
+        end_time = end_date + timedelta(hours=23, minutes=59)
+    except:
+        messages.error(request, "Invalid Repeat Daily Until. "
+                       "Should be formatted as MM/DD/YYYY.")
+        error = True
+        return (recurrences_to_save, recurrences_to_remove, error)
+
+    # end date must be at least 1 day and no more than 90 days after start
+    num_days = (end_time - reservation.start_time).days
+    if num_days < 1:
+        messages.error(request, "Repeat Daily Until must be later than Date.")
+        error = True
+        return (recurrences_to_save, recurrences_to_remove, error)
+    if num_days > 90:
+        messages.error(request, "Reservations cannot repeat more than 90 days.")
+        error = True
+        return (recurrences_to_save, recurrences_to_remove, error)
+
+    # assemble the recurrences
+    next_start = reservation.start_time + timedelta(days=1)
+    next_end = reservation.end_time + timedelta(days=1)
+    while next_start < end_time:
+        recurrence = deepcopy(reservation)
+        recurrence.id = None
+        recurrence.start_time = next_start
+        recurrence.end_time = next_end
+
+        recurrences_to_save.append(recurrence)
+
+        next_start = next_start + timedelta(days=1)
+        next_end = next_end + timedelta(days=1)
+
+    return (recurrences_to_save, recurrences_to_remove, error)
+
+
 def __save_reservation(request, form_values):
     try:
-        (reservation, resources, error) = __assemble_reservation(
+        (reservation, resources, reservation_error) = __assemble_reservation(
             request, form_values)
 
-        # save the reservation if there were no errors
-        if not error:
-            is_new = not reservation.id
+        (save_recurrences, remove_recurrences, recurrence_error) = \
+            __assemble_recurrences(
+                request, form_values, reservation, resources)
 
-            # if it's a new reservation, check for an easter egg
-            if is_new and reservation.event in EASTER_EGGS:
-                request.session[EASTER_EGG_KEY] = EASTER_EGGS[reservation.event]
-            elif EASTER_EGG_KEY in request.session:
-                del request.session[EASTER_EGG_KEY]
+        # check for errors before we save
+        if reservation_error or recurrence_error:
+            return render(request, 'reservations/addedit.html', form_values)
 
+        
+        # save the reservation
+        is_new = not reservation.id
+
+        # if it's a new reservation, check for an easter egg
+        if is_new and reservation.event in EASTER_EGGS:
+            request.session[EASTER_EGG_KEY] = EASTER_EGGS[reservation.event]
+        elif EASTER_EGG_KEY in request.session:
+            del request.session[EASTER_EGG_KEY]
+
+        # save the basic reservation
+        reservation.save()
+
+        # attach the resources and save again
+        reservation.resources = resources
+        reservation.save(False)
+
+        # if there are recurrences to remove, do that
+        if remove_recurrences:
+            for recurrence in remove_recurrences:
+                recurrence.delete()
+
+        # if there are recurrences to add, do a bunch more saving
+        if save_recurrences:
+            reservation.recurrence_id = reservation.id
             reservation.save()
-            reservation.resources = resources
-            reservation.save(False)
-            messages.success(request, "%s %s has been %s"
-                             % (reservation.camp.name, reservation.event,
-                                "created" if is_new else "updated"))
+                
+            for recurrence in save_recurrences:
+                recurrence.recurrence_id = reservation.id
+                recurrence.save()
 
-            # remember this users camp and owner name
-            request.session[LAST_CAMP_KEY] = reservation.camp.id
-            request.session[LAST_OWNER_KEY] = reservation.owner
+                recurrence.resources = resources
+                recurrence.save()
+            
+        messages.success(request, "%s %s has been %s"
+                         % (reservation.camp.name, reservation.event,
+                            "created" if is_new else "updated"))
 
-            if 'another' in request.POST:
-                return HttpResponseRedirect('/reservation/create')
+        # remember this users camp and owner name
+        request.session[LAST_CAMP_KEY] = reservation.camp.id
+        request.session[LAST_OWNER_KEY] = reservation.owner
 
-            return HttpResponseRedirect('/')
+        if 'another' in request.POST:
+            return HttpResponseRedirect('/reservation/create')
+
+        return HttpResponseRedirect('/')
     except Exception as e:
         messages.error(request, e.message or e.args[1])
 
@@ -216,6 +320,21 @@ def __populate_existing_reservation(reservation_id, request, form_values):
     # editing an existing reservation.  load it from the database
     # and fill in form fields
     reservation = get_object_or_404(models.Reservation, pk=reservation_id)
+
+    # if this is a recurring reservation, make sure we are editing the
+    # primary event
+    if (reservation.recurrence_id
+        and reservation.recurrence_id != reservation.id):
+        return HttpResponseRedirect('/reservation/edit/%s'
+                                    % reservation.recurrence_id)
+
+    if reservation.recurrence_id:
+        messages.warning(request, 'This is a recurring reservation. '
+                         'Any changes will apply to all events.')
+        last_recurrence = reservation.recurrences().last()
+        form_values['repeat_until_value'] = last_recurrence.start_time.strftime(
+            settings.DATE_FORMAT)
+    
     form_values['event_value'] = reservation.event
     form_values['owner_value'] = reservation.owner
     form_values['notes_value'] = reservation.notes
@@ -264,8 +383,6 @@ def create_or_edit_reservation(request, reservation_id=None):
         form_values['action'] = '/reservation/create/'
 
     if request.method == 'POST':
-        if 'cancel' in request.POST:
-            return HttpResponseRedirect('/')
         return __save_reservation(request, form_values)
     elif reservation_id:
         return __populate_existing_reservation(reservation_id, request,

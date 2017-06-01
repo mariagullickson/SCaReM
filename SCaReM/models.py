@@ -49,8 +49,11 @@ class Reservation(models.Model):
     resources = models.ManyToManyField(Resource)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    repeat_until = models.DateField(null=True)
     notes = models.TextField(max_length=1000, null=True, blank=True)
+
+    # if this is part of a recurring event, it will point to the first
+    # event
+    recurrence_id = models.IntegerField(null=True)
 
     def __str__(self):
         return "%s %s on %s" % (
@@ -85,6 +88,15 @@ class Reservation(models.Model):
 
         return result
 
+    def recurrences(self):
+        id_to_check = self.recurrence_id or self.id
+        if not id_to_check:
+            return []
+        return Reservation.objects.filter(
+            recurrence_id__exact=id_to_check).exclude(
+                id__exact=id_to_check).order_by(
+                    'start_time')
+
     def resource_names(self):
         return ", ".join([r.name for r in self.resources.all()])
 
@@ -99,18 +111,16 @@ class Reservation(models.Model):
         for resource in resources:
             if resource.allow_conflicts == True:
                 continue
-            resource_conflicts = Reservation.objects.filter(
-                resources__id__exact=resource.id).filter(
-                    start_time__lt=self.end_time).filter(
-                        end_time__gt=self.start_time)
+            resource_conflicts = Reservation.objects.exclude(
+                id__exact=self.id).filter(
+                    resources__id__exact=resource.id).filter(
+                        start_time__lt=self.end_time).filter(
+                            end_time__gt=self.start_time)
+            if self.id:
+                resource_conflicts = resource_conflicts.exclude(
+                    recurrence_id__exact=self.id)
             for conflict in resource_conflicts:
                 conflicts[conflict.id] = conflict
-
-        # if we are editing an existing reservation, we probably found a
-        # "conflict" with ourself.  obviously that's not a real conflict,
-        # so remove it if it's there
-        if self.id in conflicts:
-            del conflicts[self.id]
 
         return conflicts.values()
 
