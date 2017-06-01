@@ -58,7 +58,7 @@ def delete_reservation(request, reservation_id=None):
     return render(request, 'reservations/delete.html', data)
 
 
-def __assemble_reservation(request, form_values):
+def _assemble_reservation(request, form_values):
     reservation = models.Reservation()
     error = False
 
@@ -162,13 +162,13 @@ def __assemble_reservation(request, form_values):
 
     # look for conflicts
     if date and start_time and end_time:
-        if __check_for_conflicts(reservation, resources, request):
+        if _check_for_conflicts(reservation, resources, request):
             error = True
 
     return (reservation, resources, error)
 
 
-def __check_for_conflicts(reservation, resources, request,
+def _check_for_conflicts(reservation, resources, request,
                           ignore_recurrence=None):
     conflicts = reservation.check_for_conflicts(resources, ignore_recurrence)
     resource_ids = [resource.id for resource in resources]
@@ -194,7 +194,7 @@ def __check_for_conflicts(reservation, resources, request,
     return True
 
 
-def __assemble_recurrences(request, form_values, reservation, resources):
+def _assemble_recurrences(request, form_values, reservation, resources):
     error = False
     recurrences_to_save = []
 
@@ -252,7 +252,7 @@ def __assemble_recurrences(request, form_values, reservation, resources):
         ignore_recurrence = None
         if 'reservation_id' in form_values:
             ignore_recurrence = form_values['reservation_id']
-        if __check_for_conflicts(recurrence, resources, request,
+        if _check_for_conflicts(recurrence, resources, request,
                                  ignore_recurrence):
             error = True
 
@@ -263,13 +263,13 @@ def __assemble_recurrences(request, form_values, reservation, resources):
     return (recurrences_to_save, recurrences_to_remove, error)
 
 
-def __save_reservation(request, form_values):
+def _save_reservation(request, form_values):
     try:
-        (reservation, resources, reservation_error) = __assemble_reservation(
+        (reservation, resources, reservation_error) = _assemble_reservation(
             request, form_values)
 
         (save_recurrences, remove_recurrences, recurrence_error) = \
-            __assemble_recurrences(
+            _assemble_recurrences(
                 request, form_values, reservation, resources)
 
         # check for errors before we save
@@ -328,7 +328,7 @@ def __save_reservation(request, form_values):
     return render(request, 'reservations/addedit.html', form_values)
     
 
-def __populate_existing_reservation(reservation_id, request, form_values):
+def _populate_existing_reservation(reservation_id, request, form_values):
     # editing an existing reservation.  load it from the database
     # and fill in form fields
     reservation = get_object_or_404(models.Reservation, pk=reservation_id)
@@ -363,7 +363,7 @@ def __populate_existing_reservation(reservation_id, request, form_values):
     return render(request, 'reservations/addedit.html', form_values)
 
 
-def __populate_blank_reservation(request, form_values):
+def _populate_blank_reservation(request, form_values):
     # if we are starting a fresh reservation, prefill camp and owner
     # with the last values used in this session
     if LAST_OWNER_KEY in request.session:
@@ -395,9 +395,9 @@ def create_or_edit_reservation(request, reservation_id=None):
         form_values['action'] = '/reservation/create/'
 
     if request.method == 'POST':
-        return __save_reservation(request, form_values)
+        return _save_reservation(request, form_values)
     elif reservation_id:
-        return __populate_existing_reservation(reservation_id, request,
+        return _populate_existing_reservation(reservation_id, request,
                                                form_values)
     else:
-        return __populate_blank_reservation(request, form_values)
+        return _populate_blank_reservation(request, form_values)

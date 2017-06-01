@@ -109,7 +109,7 @@ class Reservation(models.Model):
         # by id to eliminate those.  ignore resources that allow conflicts.
         conflicts = {}
         for resource in resources:
-            if resource.allow_conflicts == True:
+            if resource.allow_conflicts:
                 continue
             resource_conflicts = Reservation.objects.exclude(
                 id__exact=self.id).filter(

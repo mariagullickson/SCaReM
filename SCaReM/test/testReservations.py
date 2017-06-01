@@ -20,7 +20,8 @@ class TestReservations(TestCase):
         reservation = Reservation.objects.create(
             start_time=datetime(2000, 1, 15, 12, 30),
             end_time=datetime(2000, 1, 15, 13, 30),
-            camp=self.camp)
+            camp=self.camp,
+            recurrence_id=123)
         reservation.resources = [self.resources[0], self.resources[1], self.resources[3]]
         reservation.save()
 
@@ -204,3 +205,13 @@ class TestReservations(TestCase):
         conflicts = reservation.check_for_conflicts(
             [self.resources[0], self.resources[2]])
         self.assertEqual(1, len(conflicts))
+
+    def test_ignore_recurrence_on_conflict(self):
+        # try a reservation with a conflict, but tell it to ignore conflicts
+        # with that recurrence id.  should get nothing.
+        reservation = Reservation()
+        reservation.start_time = datetime(2000, 1, 15, 13, 00)
+        reservation.end_time = datetime(2000, 1, 15, 14, 00)
+        conflicts = reservation.check_for_conflicts(
+            [self.resources[0], self.resources[2]], 123)
+        self.assertEqual(0, len(conflicts))

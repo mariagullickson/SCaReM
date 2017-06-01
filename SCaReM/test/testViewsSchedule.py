@@ -4,7 +4,7 @@ from SCaReM.models import Reservation, Resource, Camp
 from SCaReM import views_schedule
 
 
-class TestViews(TestCase):
+class TestViewsSchedule(TestCase):
     def setUp(self):
         # gotta have a camp
         self.camp = Camp.objects.create(name="camp pmac")
