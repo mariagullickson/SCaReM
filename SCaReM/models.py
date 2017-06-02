@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 
 
 class Tag(models.Model):
@@ -100,6 +100,10 @@ class Reservation(models.Model):
     def resource_names(self):
         return ", ".join([r.name for r in self.resources.all()])
 
+    def is_all_day(self):
+        return (self.start_time.time() == time(0, 0)
+                and self.end_time.time() == time(23, 59))
+    
     def is_frozen(self):
         return self.start_time < datetime.now() + timedelta(weeks=1)
 

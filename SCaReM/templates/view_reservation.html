@@ -17,7 +17,11 @@
   {% endif %}
   
   <div class='metadata'>
-    <div class='times'>{{ reservation.start_time.time }} to {{ reservation.end_time.time }}</div>
+    {% if reservation.is_all_day %}
+      <div class='times'>All Day</div>
+    {% else %}
+      <div class='times'>{{ reservation.start_time.time }} to {{ reservation.end_time.time }}</div>
+    {% endif %}
 
     <div class='event'>
       {% if show_camp %}
