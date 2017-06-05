@@ -1,0 +1,8 @@
+*.py
+static/
+templates/
+templatetags/
+migrations/
+views/
+admin/
+locale/
