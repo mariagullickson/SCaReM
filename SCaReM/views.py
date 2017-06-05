@@ -10,8 +10,8 @@ def index(request):
                                       .filter(end_time__lt=tomorrow) \
                                       .order_by('start_time')
     data = {
-        'camps': Camp.objects.all(),
-        'resources': Resource.objects.all(),
+        'camps': Camp.objects.all().order_by('start_time'),
+        'resources': Resource.objects.all().order_by('start_time'),
         'today': group_reservations_by_resource(reservations),
         'date': datetime.now().date(),
         }
