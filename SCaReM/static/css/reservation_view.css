@@ -5,10 +5,11 @@
 
 .view_reservation {
     border-style: solid;
-    border-radius: 8px;
+    border-radius: 5px;
     border-color: darkgreen;
-    padding: 1%;
-    margin: 1%;
+    border-width: 1px;
+    padding: 3px;
+    margin: 2px;
 }
 
 .view_reservation_day form {
@@ -18,7 +19,7 @@
 .view_reservation_day {
     border-style: solid;
     border-color: darkgreen;
-    margin: 0 10px 30px 10px;
+    margin: 0 5px 5px 5px;
 }
 
 .view_reservation input {
@@ -26,8 +27,8 @@
 }
 
 .view_reservation_day .day {
-    font-size: 150%;
-    padding: 1%;
+    font-size: 120%;
+    padding: 2px;
 }
 
 .view_reservation .owner, .view_reservation .recur {
@@ -53,20 +54,20 @@
 .view_reservation .notes {
     border-width: 1px;
     border-color: grey;
-    border-radius: 5px;
+    border-radius: 2px;
     border-style: dotted;
-    padding-left: 10px;
     width: 78%;
 }
 
 pre {
     white-space: pre-wrap;
     word-wrap: break-word;
+    margin: 2px;
 }
 
 .view_reservation .notes-outer {
     clear: left;
-    padding-top: 5px;
+    padding-top: 2px;
 }
 
 @media only screen and (max-width: 700px) {

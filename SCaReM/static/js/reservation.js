@@ -11,6 +11,9 @@ function allDay() {
     $('#id_end_time').val('11:59 PM');
 }
 
+// resource multiselect
+$('#id_resources').chosen();
+
 // filtering resources by tag
 $('#id_tag').change(function() {
     if ($('#id_tag').val()) {
@@ -19,7 +22,7 @@ $('#id_tag').change(function() {
 	for (i = 0; i < resources.length; i++)
 	{
 	    var resource_id = resources[i];
-	    $('#id_resources option[value=' + resource_id + ']').show();
+	    $("#id_resources option[value=" + resource_id + "]").show();
 	}
     } else {
 	$("#id_resources option").show();
