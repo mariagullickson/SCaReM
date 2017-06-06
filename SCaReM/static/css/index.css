@@ -17,6 +17,20 @@
     margin: 3%;
     font-size: 30px;
     text-align: center;
+    line-height: 1.1;
+}
+
+.card p {
+    margin: 5px;
+}
+
+div.card a.camp-button {
+    padding: 3px 3px 3px 3px;
+    margin: 0 1px 1px 1px;
+    white-space: nowrap;
+    color: black;
+    font-size: 14px;
+    line-height: 1.5;
 }
 
 body {

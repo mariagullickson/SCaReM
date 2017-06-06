@@ -30,20 +30,9 @@
 
     <div class='card'>
       <p>Reservations by camp:</p>
-      <form action="/schedule/bycamp">
-        {% csrf_token %}
-        <p>
-          <select id="id_camp" name="camp_id">
-            <option value="">---------</option>
-            {% for camp in camps %}
-            <option value="{{ camp.id }}"
-                    {% if camp.id == camp_value %}selected="selected"{% endif %}
-                    >{{ camp.name }}</option>
-            {% endfor %}
-          </select>
-        </p>
-        <p><input type="submit" value="View" /></p>
-      </form>
+      {% for camp in camps %}
+        <a class="button camp-button" style="background:{{camp.color}};" href="/schedule/bycamp?camp_id={{camp.id}}"/>{{camp.name}}</a>
+      {% endfor %}
     </div>
   
     <div class='card'>
