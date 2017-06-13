@@ -93,13 +93,17 @@ pre {
     }
 
     .view_reservation .notes {
-        width: 30%;
+        width: 38%;
 	float: right;
 	clear: none;
     }
+
+    .view_reservation {
+	background: initial;
+    }
     
     .view_reservation .metadata {
-	width: 35%;
+	width: 29%;
     }
 
     .view_reservation .resources {
