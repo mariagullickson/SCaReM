@@ -18,6 +18,7 @@
   <form action="{{ action }}" method="post">
     {% csrf_token %}
     <input type="hidden" name="reservation_id" value="{{ reservation_id }}" />
+    <input type="hidden" name="return_url" value="{{ return_url }}" />
 
     <div class="form-row field-camp">
       <div>
@@ -105,7 +106,7 @@
     
     <input type="submit" name="save" value="Save Reservation" />
     <input type="submit" name="another" value="Save and Add Another" />
-    <a href="/">Cancel</a>
+    <a href="{{ return_url }}">Cancel</a>
   </form>
 
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>

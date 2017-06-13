@@ -34,7 +34,7 @@ def delete_reservation(request, reservation_id=None):
         return HttpResponseRedirect('/reservation/delete/%s'
                                     % reservation.recurrence_id)
 
-    if 'confirmed' in request.GET and request.GET['confirmed'] == 'true':
+    if 'confirmed' in request.POST and request.POST['confirmed'] == 'true':
         # they've confirmed.  actually delete the reservation and go
         # back to the index.  if it's a recurrence, delete them all
         if reservation.recurrence_id:
@@ -44,7 +44,7 @@ def delete_reservation(request, reservation_id=None):
         messages.success(request,
                          "%s %s has been deleted"
                          % (reservation.camp.name, reservation.event))
-        return redirect('/')
+        return redirect(request.POST['return_url'])
 
     # show the confirmation page before doing anything
     messages.warning(request,
@@ -53,8 +53,11 @@ def delete_reservation(request, reservation_id=None):
         messages.warning(request, 'This is a recurring reservation. '
                          'All events will be deleted.')
     data = {
-        'reservation': reservation
+        'reservation': reservation,
+        'return_url': '/'
     }
+    if 'HTTP_REFERER' in request.META and request.META['HTTP_REFERER']:
+        data['return_url'] = request.META['HTTP_REFERER']
     return render(request, 'reservations/delete.html', data)
 
 
@@ -321,7 +324,7 @@ def _save_reservation(request, form_values):
         if 'another' in request.POST:
             return HttpResponseRedirect('/reservation/create')
 
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect(request.POST['return_url'])
     except Exception as e:
         messages.error(request, e.message or e.args[1])
 
@@ -387,7 +390,16 @@ def create_or_edit_reservation(request, reservation_id=None):
         'resources': models.Resource.objects.all().order_by('name'),
         'tags': models.Tag.objects.all(),
         'tag_resources': json.dumps(tag_resources),
+        'return_url': '/'
     }
+
+    if request.method == 'POST':
+        form_values['return_url'] = request.POST['return_url']
+    elif 'HTTP_REFERER' in request.META and request.META['HTTP_REFERER']:
+        return_url = request.META['HTTP_REFERER']
+        if (not '/reservation/edit/' in return_url
+            and not '/reservation/create' in return_url):
+            form_values['return_url'] = request.META['HTTP_REFERER']
 
     if reservation_id:
         form_values['action'] = '/reservation/edit/%s/' % reservation_id
@@ -397,6 +409,7 @@ def create_or_edit_reservation(request, reservation_id=None):
     if request.method == 'POST':
         return _save_reservation(request, form_values)
     elif reservation_id:
+        
         return _populate_existing_reservation(reservation_id, request,
                                                form_values)
     else:

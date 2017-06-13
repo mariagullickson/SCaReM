@@ -9,10 +9,11 @@
 
 {% include "view_reservation.html" with hide_actions=True %}
 
-<form action="/reservation/delete/{{reservation.id}}">
+<form action="/reservation/delete/{{reservation.id}}/" method="post">
   {% csrf_token %}
+  <input type="hidden" name="return_url" value="{{ return_url }}" />
   <input type="hidden" name="confirmed" value="true"/>
-  <input type="submit" value="Delete" /> <a href="/">Cancel</a>
+  <input type="submit" value="Delete" /> <a href="{{ return_url }}">Cancel</a>
 </form>
 
 {% endblock %}
