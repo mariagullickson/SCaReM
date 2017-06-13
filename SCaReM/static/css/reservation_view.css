@@ -57,17 +57,14 @@
     border-radius: 2px;
     border-style: dotted;
     width: 78%;
+    clear: left;
+    padding-top: 2px;
 }
 
 pre {
     white-space: pre-wrap;
     word-wrap: break-word;
     margin: 2px;
-}
-
-.view_reservation .notes-outer {
-    clear: left;
-    padding-top: 2px;
 }
 
 @media only screen and (max-width: 700px) {
@@ -98,15 +95,11 @@ pre {
     .view_reservation .notes {
         width: 25%;
 	float: right;
-    }
-
-    .view_reservation .notes-outer {
 	clear: none;
     }
     
-    .view_reservation .metadata {
+    .view_reservation .resources, .view_reservation .metadata {
 	width: 35%;
-	float: left;
     }
 
     .view_reservation_day .day {
