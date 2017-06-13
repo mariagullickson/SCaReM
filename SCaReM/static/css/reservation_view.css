@@ -96,6 +96,31 @@ pre {
     }
 
     .view_reservation .notes {
-        width: 98%;
+        width: 25%;
+	float: right;
+    }
+
+    .view_reservation .notes-outer {
+	clear: none;
+    }
+    
+    .view_reservation .metadata {
+	width: 35%;
+	float: left;
+    }
+
+    .view_reservation_day .day {
+	font-size: 12px;
+	padding: 0 2px 0 2px;
+    }
+
+    .view_reservation_day .view_reservation {
+	font-size: 10px;
+	padding: 0 2px 0 2px;
+    }
+
+    .view_reservation .owner, .view_reservation .recur {
+	color: grey;
+	font-size: 10px;
     }
 }
