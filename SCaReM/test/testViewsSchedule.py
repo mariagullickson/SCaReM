@@ -37,20 +37,28 @@ class TestViewsSchedule(TestCase):
             self.create_reservation(datetime(2020, 10, 4, 18, 00),
                                     datetime(2020, 10, 4, 20, 00),
                                     "Event 3B"),
+            self.create_reservation(datetime(2020, 10, 3, 20, 00),
+                                    datetime(2020, 10, 5, 11, 00),
+                                    "Event 234")
             ]
         groups = views_schedule.group_reservations_by_day(reservations)
-        self.assertEqual(3, len(groups))
+        self.assertEqual(4, len(groups))
         self.assertEqual(date(2020, 10, 1), groups[0][0])
         self.assertEqual(2, len(groups[0][1]))
         self.assertEqual("Event 1A", groups[0][1][0].event)
         self.assertEqual("Event 1B", groups[0][1][1].event)
         self.assertEqual(date(2020, 10, 3), groups[1][0])
-        self.assertEqual(1, len(groups[1][1]))
+        self.assertEqual(2, len(groups[1][1]))
         self.assertEqual("Event 2", groups[1][1][0].event)
+        self.assertEqual("Event 234", groups[1][1][1].event)
         self.assertEqual(date(2020, 10, 4), groups[2][0])
-        self.assertEqual(2, len(groups[2][1]))
+        self.assertEqual(3, len(groups[2][1]))
         self.assertEqual("Event 3A", groups[2][1][0].event)
         self.assertEqual("Event 3B", groups[2][1][1].event)
+        self.assertEqual("Event 234", groups[2][1][2].event)
+        self.assertEqual(date(2020, 10, 5), groups[3][0])
+        self.assertEqual(1, len(groups[3][1]))
+        self.assertEqual("Event 234", groups[3][1][0].event)
 
     def create_reservation(self, start_time, end_time, event):
         reservation = Reservation.objects.create(start_time=start_time,

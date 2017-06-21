@@ -101,18 +101,32 @@ def _assemble_reservation(request, form_values):
         error = True
     form_values['resource_values'] = [resource.id for resource in resources]
 
-    date = request.POST['date']
-    if date:
+    start_date = request.POST['start_date']
+    if start_date:
         try:
-            datetime.strptime(date, settings.DATE_FORMAT)
-            form_values['date_value'] = date
+            datetime.strptime(start_date, settings.DATE_FORMAT)
+            form_values['start_date_value'] = start_date
         except:
             messages.error(request,
-                           "Invalid Date. Should be formatted as MM/DD/YYYY.")
+                           "Invalid Start Date. Should be formatted as MM/DD/YYYY.")
             error = True
-            date = None
+            start_date = None
     else:
-        messages.error(request, "You must specify a Date.")
+        messages.error(request, "You must specify a Start Date.")
+        error = True
+
+    end_date = request.POST['end_date']
+    if end_date:
+        try:
+            datetime.strptime(end_date, settings.DATE_FORMAT)
+            form_values['end_date_value'] = end_date
+        except:
+            messages.error(request,
+                           "Invalid End Date. Should be formatted as MM/DD/YYYY.")
+            error = True
+            end_date = None
+    else:
+        messages.error(request, "You must specify a End Date.")
         error = True
 
     start_time = request.POST['start_time']
@@ -143,13 +157,13 @@ def _assemble_reservation(request, form_values):
         messages.error(request, "You must specify a End Time.")
         error = True
 
-    if date and start_time:
+    if start_date and start_time:
         reservation.start_time = datetime.strptime(
-            "%s %s" % (date, start_time),
+            "%s %s" % (start_date, start_time),
             settings.DATETIME_FORMAT)
-    if date and end_time:
+    if end_date and end_time:
         reservation.end_time = datetime.strptime(
-            "%s %s" % (date, end_time),
+            "%s %s" % (end_date, end_time),
             settings.DATETIME_FORMAT)
     if (reservation.start_time and reservation.end_time and
             reservation.end_time <= reservation.start_time):
@@ -164,7 +178,7 @@ def _assemble_reservation(request, form_values):
         error = True
 
     # look for conflicts
-    if date and start_time and end_time:
+    if start_date and start_time and end_date and end_time:
         if _check_for_conflicts(reservation, resources, request):
             error = True
 
@@ -186,11 +200,20 @@ def _check_for_conflicts(reservation, resources, request,
         used_resources = [resource for resource in conflict.resources.all()
                           if resource.id in resource_ids
                           and not resource.allow_conflicts]
-        message += " They are using %s from %s to %s on %s." % (
-            ", ".join([resource.name for resource in used_resources]),
-            conflict.start_time.strftime(settings.TIME_FORMAT),
-            conflict.end_time.strftime(settings.TIME_FORMAT),
-            conflict.start_time.strftime(settings.DATE_FORMAT))
+        
+        start_time = conflict.start_time.strftime(settings.TIME_FORMAT)
+        start_date = conflict.start_time.strftime(settings.DATE_FORMAT)
+        end_time = conflict.end_time.strftime(settings.TIME_FORMAT)
+        end_date = conflict.end_time.strftime(settings.DATE_FORMAT)
+
+        if start_date == end_date:
+            message += " They are using %s from %s to %s on %s." % (
+                ", ".join([resource.name for resource in used_resources]),
+                start_time, end_time, start_date)
+        else:
+            message += " They are using %s from %s on %s to %s on %s." % (
+                ", ".join([resource.name for resource in used_resources]),
+                start_time, start_date, end_time, end_date)
 
         messages.error(request, message)
 

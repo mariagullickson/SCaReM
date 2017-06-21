@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from models import Reservation, Camp, Resource
 import settings
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.contrib import messages
 
 
@@ -68,23 +68,31 @@ def view_by_date(request):
 def group_reservations_by_day(reservations):
     """This method takes in a list of reservation objects that are assumed
     to be sorted by date and time.  It returns a list of pairs, each
-    representation one day's worth of reservations.  The first item in
+    representing one day's worth of reservations.  The first item in
     the pair is the day.  The second item is a list of reservations
     that occur on that day.
 
     """
-    reservation_days = []
-    last_day = ''
-    last_day_reservations = []
+    reservation_days = {}
     for reservation in reservations:
-        this_day = reservation.start_time.date()
-        if this_day != last_day:
-            if last_day_reservations:
-                reservation_days.append((last_day, last_day_reservations))
-            last_day = this_day
-            last_day_reservations = []
-        last_day_reservations.append(reservation)
-    if last_day_reservations:
-        reservation_days.append((last_day, last_day_reservations))
+        start_day = reservation.start_time.date()
+        end_day = reservation.end_time.date()
 
-    return reservation_days
+        # add this reservation to every day it occurs on
+        while start_day <= end_day:
+            start_day_key = datetime.strftime(start_day, settings.DATE_FORMAT)
+            
+            # make sure this date is in the result set
+            if start_day_key not in reservation_days:
+                reservation_days[start_day_key] = (start_day, [])
+                
+            # add this reservation
+            reservation_days[start_day_key][1].append(reservation)
+
+            # check the next day
+            start_day += timedelta(1)
+
+
+    result = reservation_days.values()
+    result.sort(key=lambda r: r[0])
+    return result

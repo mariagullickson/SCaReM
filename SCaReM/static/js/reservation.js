@@ -11,6 +11,10 @@ function allDay() {
     $('#id_end_time').val('11:59 PM');
 }
 
+$('#id_start_date').change(function() {
+    $('#id_end_date').val($('#id_start_date').val());
+});
+
 // resource multiselect
 $('#id_resources').multiSelect();
 

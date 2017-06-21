@@ -2,10 +2,23 @@ div.related-widget-wrapper {
     float: none;
 }
 
+div.time label.prefix {
+    text-align: left;
+    width: 30px;
+}
+
 div.time label {
     display: inline-block;
-    width: 120px;
+    width: 75px;
     text-align: right;
+}
+
+div.time label.repeat {
+    width: 108px;
+}
+
+div.time button#allday {
+    margin-left: 85px;
 }
 
 div.ui-datepicker-header {

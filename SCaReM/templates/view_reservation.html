@@ -17,11 +17,30 @@
   {% endif %}
   
   <div class='metadata'>
-    {% if reservation.is_all_day %}
-      <div class='times'>All Day</div>
-    {% else %}
-      <div class='times'>{{ reservation.start_time.time }} to {{ reservation.end_time.time }}</div>
-    {% endif %}
+    <div class='times'>
+      {% if day %}
+        {% if reservation.start_time.date != day %}
+          {% if reservation.end_time.date != day %}
+            Ongoing
+          {% else %}
+            Ongoing to {{ reservation.end_time.time }}
+          {% endif %}
+        {% else %}
+          {% if reservation.end_time.date != day %}
+            {{ reservation.start_time.time }} to Ongoing
+          {% else %}
+            {% if reservation.is_all_day %}
+              All Day
+            {% else %}
+              {{ reservation.start_time.time }} to {{ reservation.end_time.time }}
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      {% else %}
+        {{ reservation.start_time }} to {{ reservation.end_time }}
+      {% endif %}
+      
+    </div>
 
     <div class='event'>
       {% if show_camp %}

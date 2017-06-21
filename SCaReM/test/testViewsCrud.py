@@ -23,7 +23,8 @@ class TestViewsCrud(TestCase):
             'notes': 'This will be fun',
             'camp': self.camp.id,
             'resources': self.resource.id,
-            'date': '08/04/2030',
+            'start_date': '08/04/2030',
+            'end_date': '08/04/2030',
             'start_time': '10:00 AM',
             'end_time': '11:00 AM',
         })
@@ -63,7 +64,8 @@ class TestViewsCrud(TestCase):
         self.assertEqual('Wilmur', form_values['owner_value'])
         self.assertEqual('This will be fun', form_values['notes_value'])
         self.assertEqual(self.camp.id, form_values['camp_value'])
-        self.assertEqual('08/04/2030', form_values['date_value'])
+        self.assertEqual('08/04/2030', form_values['start_date_value'])
+        self.assertEqual('08/04/2030', form_values['end_date_value'])
         self.assertEqual('10:00 AM', form_values['start_time_value'])
         self.assertEqual('11:00 AM', form_values['end_time_value'])
 
@@ -76,7 +78,8 @@ class TestViewsCrud(TestCase):
             'notes': 'This will be fun',
             'camp': None,
             'resources': self.resource.id,
-            'date': '08/04/2030',
+            'start_date': '08/04/2030',
+            'end_date': '08/04/2030',
             'start_time': '10:00 AM',
             'end_time': '11:00 AM',
         })
@@ -117,7 +120,8 @@ class TestViewsCrud(TestCase):
         self.assertEqual(0, reservation.end_time.minute)
         self.assertEqual([self.resource.id], form_values['resource_values'])
         self.assertEqual('This will be fun', form_values['notes_value'])
-        self.assertEqual('08/04/2030', form_values['date_value'])
+        self.assertEqual('08/04/2030', form_values['start_date_value'])
+        self.assertEqual('08/04/2030', form_values['end_date_value'])
         self.assertEqual('10:00 AM', form_values['start_time_value'])
         self.assertEqual('11:00 AM', form_values['end_time_value'])
 
@@ -131,7 +135,8 @@ class TestViewsCrud(TestCase):
             'notes': 'This will be fun',
             'camp': self.camp.id,
             'resources': self.resource.id,
-            'date': '08/04/2030',
+            'start_date': '08/04/2030',
+            'end_date': '08/04/2030',
             'start_time': '10:00 AM',
             'end_time': '11:00 AM',
         })
@@ -163,6 +168,7 @@ class TestViewsCrud(TestCase):
         self.assertEqual('Wilmur', form_values['owner_value'])
         self.assertEqual('This will be fun', form_values['notes_value'])
         self.assertEqual(self.camp.id, form_values['camp_value'])
-        self.assertEqual('08/04/2030', form_values['date_value'])
+        self.assertEqual('08/04/2030', form_values['start_date_value'])
+        self.assertEqual('08/04/2030', form_values['end_date_value'])
         self.assertEqual('10:00 AM', form_values['start_time_value'])
         self.assertEqual('11:00 AM', form_values['end_time_value'])
